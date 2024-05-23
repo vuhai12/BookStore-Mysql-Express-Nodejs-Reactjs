@@ -1,0 +1,13 @@
+{
+    "auth": {
+        "login": "Đăng nhập",
+        "register": "Đăng ký",
+        "logout": "Đăng xuất"
+    },
+    "book": {
+        "home": "Trang chủ",
+        "manager book": "Quản lý sách",
+        "manager user": "Quản lý người dùng"
+    },
+    "language": "Tiếng Việt"
+}
