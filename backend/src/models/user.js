@@ -12,22 +12,17 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       User.belongsTo(models.Role, { foreignKey: 'role_code', targetKey: 'code', as: 'roleData' })
-      // User.belongsTo(models.Role, { foreignKey: 'role_code' ,as: 'roleData'})
-      User.hasMany(models.Order, { foreignKey: 'userId' });
-      User.belongsToMany(models.Book, { through: 'Wishlist', foreignKey: 'userId', otherKey: 'bookId' });
-      User.hasMany(models.Wishlist, { foreignKey: 'userId' });
-      User.hasOne(models.Cart,{ foreignKey: 'cartId' });
+      User.belongsToMany(models.Book, { through: 'BookUsers', foreignKey: 'userBookId' });
     }
   }
   User.init({
     name: DataTypes.STRING,
     email: DataTypes.STRING,
     password: DataTypes.STRING,
-    avatar: DataTypes.BLOB('long'),
-    // role_code: DataTypes.STRING,
-    refresh_token: DataTypes.STRING,
     address: DataTypes.STRING,
-
+    avatar: DataTypes.STRING,
+    role_code: DataTypes.STRING,
+    refresh_token: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'User',

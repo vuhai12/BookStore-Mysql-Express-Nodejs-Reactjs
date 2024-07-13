@@ -9,7 +9,7 @@ const hashPassword = (password) => {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(8))
 }
 
-export const getOne = (userID) => new Promise(async (resolve, reject) => {
+export const getCurrent = (userID) => new Promise(async (resolve, reject) => {
   try {
     const response = await db.User.findOne({
       where: { id: userID },
@@ -111,14 +111,15 @@ export const createNewUser = (body, fileData) =>
   });
 
 
-export const updateUser = ({ bid, ...body }, fileData) =>
+export const updateUser = (body, fileData,id) =>
   new Promise(async (resolve, reject) => {
 
     try {
       // if (fileData) body.image = fileData?.path;
       if (fileData) body.avatar = `http://localhost:${process.env.PORT}/${fileData?.filename}`;
+      if(body.password) body.password =hashPassword(body?.password)
       const response = await db.User.update(body, {
-        where: { id: bid },
+        where: { id },
       });
 
       resolve({

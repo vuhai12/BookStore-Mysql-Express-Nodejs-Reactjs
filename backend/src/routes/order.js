@@ -8,8 +8,8 @@ const router = express.Router()
 router.use(verifyToken)
 router.use(isCreatorOrAdmin)
 
-router.post('/', controllers.createNewOrder)
-router.get('/:id', controllers.getOrderById)
+router.post('/', controllers.createOrder)
+router.get('/id', controllers.getOrderById)
 
 router.get('/', controllers.getOrders)
 // router.delete('/', controllers.deleteOrder)

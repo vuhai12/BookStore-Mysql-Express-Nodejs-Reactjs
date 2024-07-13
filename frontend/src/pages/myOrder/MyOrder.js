@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { fetchGetOrderToolkit } from '../../redux/slides/orderSlice'
+// import { fetchGetOrderToolkit } from '../../redux/slides/orderSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import Container from 'react-bootstrap/Container';
 
@@ -9,7 +9,7 @@ const MyOrder = () => {
   const listOrder = useSelector((state) => state.order.listOrder)
  
   useEffect(() => {
-    dispatch(fetchGetOrderToolkit())
+    // dispatch(fetchGetOrderToolkit())
   }, [])
   return (
     <>

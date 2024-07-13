@@ -1,28 +1,122 @@
 import { createSlice, current, createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  apiAddCart,
+  apiGetCart,
+  apiCheckedBookCart,
+  apiDeleteBookInCart,
+  apiCheckedAllBookCart,
+  apiDeleteAllBookCart,
+  apiGetBookInCartChecked,
+  apiQuantityBookInCart
+} from '../../services/CartService'
 
 export const fetchGetCartToolkit = createAsyncThunk(
   'users/fetchGetCartToolkit',
-  async (data, thunkAPI) => {
+  async (data, { rejectWithValue }) => {
     try {
       const response = await apiGetCart()
       return { res: response.cartData }
     } catch (error) {
-      if (error.response) {
-        return error.response
-      }
-      else return { success: false, message: error.message }
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
+export const fetchGetBookInCartChecked = createAsyncThunk(
+  'users/fetchGetBookInCartChecked',
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await apiGetBookInCartChecked()
+      console.log('response',response)
+      return { res: response.cartData }
+    } catch (error) {
+      return rejectWithValue(error.response.data)
     }
   }
 )
 
 export const fetchAddCartToolkit = createAsyncThunk(
   'users/fetchAddCartToolkit',
-  async (data, thunkAPI) => {
+  async (data,  { rejectWithValue }) => {
     try {
       const response = await apiAddCart(data)
       return response
     } catch (error) {
-      console.log(error)
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
+export const fetchCheckedBookCartToolkit = createAsyncThunk(
+  'users/fetchCheckedBookCartToolkit',
+  async (data,  { rejectWithValue }) => {
+    try {
+      const response = await apiCheckedBookCart(data)
+      return response
+    } catch (error) {
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
+export const fetchCheckedAllBookCartToolkit = createAsyncThunk(
+  'users/fetchCheckedAllBookCartToolkit',
+  async (data,  { rejectWithValue }) => {
+    try {
+      const response = await apiCheckedAllBookCart(data)
+      return response
+    } catch (error) {
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
+export const fetchDeleteAllBookCartToolkit = createAsyncThunk(
+  'users/fetchDeleteAllBookCartToolkit',
+  async (data,  { rejectWithValue }) => {
+    try {
+      const response = await apiDeleteAllBookCart()
+      return response
+    } catch (error) {
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
+export const fetchDeleteBookInCartToolkit = createAsyncThunk(
+  'users/fetchDeleteBookInCartToolkit',
+  async (data,  { rejectWithValue }) => {
+    try {
+      const response = await apiDeleteBookInCart(data)
+      return response
+    } catch (error) {
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
+export const fetchDecrementQuantityBookInCart = createAsyncThunk(
+  'users/fetchDecrementQuantityBookInCart',
+  async (data,  { rejectWithValue }) => {
+    try {
+      console.log('data',data)
+      const response = await apiQuantityBookInCart(data)
+      return response
+    } catch (error) {
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
+export const fetchIncrementQuantityBookInCart = createAsyncThunk(
+  'users/fetchIncrementQuantityBookInCart',
+  async (data,  { rejectWithValue }) => {
+    try {
+      console.log('dataIncre',data)
+      const response = await apiQuantityBookInCart(data)
+      return response
+    } catch (error) {
+      return rejectWithValue(error.response.data)
     }
   }
 )
@@ -34,59 +128,11 @@ export const cartSlice = createSlice({
     cartToTalBook: 0,
     bookIds: [],
     isCheckedAll: false,
-    cartsChecked: []
+    cartsChecked: [],
+    listBookInCartChecked:[],
+    listCart:[]
   },
   reducers: {
-
-    getCartsChecked: (state, action) => {
-      state.cartsChecked = state.carts.filter((item) => item.isChecked == true)
-    },
-
-    removeItemCheckedCarts: (state, action) => {
-      const itemIndex = state.carts.findIndex((item) => item.bookId == action.payload)
-      console.log('tess',state.carts[itemIndex])
-      if (state.carts[itemIndex].isChecked == true) {
-        state.carts = state.carts.filter((item) => item != state.carts[itemIndex])
-      }
-    },
-
-    removeAllItemCheckedCarts: (state, action) => {
-      state.isCheckedAll=false
-      state.carts = state.carts.filter((item) => item.isChecked != true)
-    },
-
-    removeItemCarts: (state, action) => {
-      state.carts = state.carts.filter((item) => item.isChecked != true)
-    },
-
-    checkedItem: (state, action) => {
-      const itemIndex = state.carts.findIndex((item) => item.bookId == action.payload.bookId)
-      const isChecked = state.bookIds.includes(action.payload.bookId)
-
-      if (isChecked) {
-        state.carts[itemIndex].isChecked = false
-        state.bookIds = state.bookIds.filter((item) => item != action.payload.bookId)
-      } else {
-        state.carts[itemIndex].isChecked = true
-        state.bookIds.push(action.payload.bookId)
-      }
-    },
-
-    checkedAllItem: (state, action) => {
-      
-      
-      if (action.payload.isCheckedAll) {
-        state.isCheckedAll = action.payload.isCheckedAll
-        state.carts.map((item) => item.isChecked = true)
-        state.bookIds = action.payload.arrAllIdBook
-        
-      } else {
-        state.isCheckedAll = action.payload.isCheckedAll
-        state.carts.map((item) => item.isChecked = false)
-        state.bookIds = []
-      }
-    },
-
     addToCart: (state, action) => {
      
       const itemIndex = state.carts.findIndex((item) => item?.bookId == action.payload.bookId)
@@ -143,6 +189,43 @@ export const cartSlice = createSlice({
 
   extraReducers: (builder) => {
 
+    builder.addCase(fetchDecrementQuantityBookInCart.pending, (state, action) => {
+    })
+
+    //add create new book
+    builder.addCase(fetchDecrementQuantityBookInCart.fulfilled, (state, action) => {
+    })
+
+    builder.addCase(fetchIncrementQuantityBookInCart.pending, (state, action) => {
+    })
+
+    //add create new book
+    builder.addCase(fetchIncrementQuantityBookInCart.fulfilled, (state, action) => {
+    })
+
+    builder.addCase(fetchDeleteAllBookCartToolkit.pending, (state, action) => {
+      // Add user to the state array
+     
+    })
+
+    //add create new book
+    builder.addCase(fetchDeleteAllBookCartToolkit.fulfilled, (state, action) => {
+      // Add user to the state array
+     
+    })
+
+
+    builder.addCase(fetchDeleteBookInCartToolkit.pending, (state, action) => {
+      // Add user to the state array
+      
+    })
+
+    //add create new book
+    builder.addCase(fetchDeleteBookInCartToolkit.fulfilled, (state, action) => {
+      // Add user to the state array
+      
+    })
+
     builder.addCase(fetchAddCartToolkit.pending, (state, action) => {
       // Add user to the state array
       return ({
@@ -159,18 +242,30 @@ export const cartSlice = createSlice({
         statusLoading: false,
       })
     })
-
+    
     builder.addCase(fetchGetCartToolkit.pending, (state, action) => {
-      return ({
-        ...state,
-      })
+      
+    })
+
+    builder.addCase(fetchGetCartToolkit.rejected, (state, action) => {
+      console.log('chạy vào rejected')
+      state.listCart = []
+      
     })
 
     builder.addCase(fetchGetCartToolkit.fulfilled, (state, action) => {
-      return ({
-        ...state,
-        listCart: action.payload.res
-      })
+      console.log('action.payload.res',action.payload)
+      state.listCart = action.payload.res
+      
+    })
+
+    builder.addCase(fetchGetBookInCartChecked.pending, (state, action) => {
+      
+    })
+
+    builder.addCase(fetchGetBookInCartChecked.fulfilled, (state, action) => {
+      state.listBookInCartChecked = action.payload.res
+      
     })
   },
 });

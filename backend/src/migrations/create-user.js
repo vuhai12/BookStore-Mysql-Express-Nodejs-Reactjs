@@ -11,8 +11,10 @@ module.exports = {
         // type: Sequelize.INTEGER,
         type: Sequelize.STRING
       },
+      
       name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        defaultValue: 'User'
       },
       email: {
         type: Sequelize.STRING
@@ -22,7 +24,8 @@ module.exports = {
       },
      
       address: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        defaultValue: 'Viet Nam, Ha Noi'
       },
       avatar: {
         type: Sequelize.STRING

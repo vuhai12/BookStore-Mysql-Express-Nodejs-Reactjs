@@ -39,8 +39,11 @@ const Popup = ({ isShow, options, onCancel, onAction, subActionText, actionText,
   }
 
   return (
-    <div>
-      <Modal show={isShow} onHide={onCancel}>
+    <div >
+      <Modal show={isShow} onHide={onCancel} className='boder-solid border-gray-200 border-[2px] fixed top-0 left-0 right-0 bottom-0 bg-gray-200 p-[10px] 
+        sm:w-[30%]  sm:translate-x-[-50%] sm:left-[50%] sm:h-[80%] sm:top-[50%] sm:translate-y-[-50%] sm:overflow-auto
+      '
+      >
         <Modal.Body>
           {items.map((option) => {
             return (
@@ -98,12 +101,12 @@ const Popup = ({ isShow, options, onCancel, onAction, subActionText, actionText,
           })}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={onCancel}>
+          <button className='bg-red-500 text-white rounded-[5px] p-[10px] mr-[10px] mt-[10px]' onClick={onCancel}>
             {subActionText}
-          </Button>
-          <Button variant="primary" onClick={onAction}>
+          </button>
+          <button className='bg-slate-700 text-white rounded-[5px] p-[10px]' onClick={onAction}>
             {actionText}
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
     </div>

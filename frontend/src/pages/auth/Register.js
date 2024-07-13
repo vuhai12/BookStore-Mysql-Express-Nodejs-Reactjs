@@ -1,14 +1,9 @@
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify'
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next'
 import { fetchRegisterToolkit } from '../../redux/slides/userSlice';
-import { useNavigate, NavLink } from 'react-router-dom'
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-
+import { useNavigate, NavLink, Link } from 'react-router-dom'
 
 const Register = () => {
 
@@ -16,7 +11,6 @@ const Register = () => {
     const navigate = useNavigate()
     const [dataRegister, setDataRegister] = useState({})
     const [isSubmit, setIsSubmit] = useState(false)
-
     const { t } = useTranslation('translation')
     const [errorMessage, setErrorMessage] = useState({})
 
@@ -38,26 +32,21 @@ const Register = () => {
                 error.email = 'Email is not invalid'
             }
         }
-
         if (dataRegister.password == '' || dataRegister.password == undefined) {
             error.password = 'Please enter password'
         }
-
         if (dataRegister.password?.length < 6) {
             error.password = 'password must be at least 6 characters long'
         }
-
         if (dataRegister.confirmPassword != dataRegister.password) {
             error.confirmPassword = 'Passwword is not match'
         }
-
         if (Object.keys(error).length > 0) {
             setErrorMessage(error)
             isValid = false
         } else {
             setErrorMessage({})
         }
-        
         return isValid
     }
 
@@ -65,7 +54,7 @@ const Register = () => {
         let isValid = isValidForm()
         if (isValid) {
             dispatch(fetchRegisterToolkit({ email: dataRegister.email, password: dataRegister.password })).then((result) => {
-               
+
                 if (result.payload) {
                     if (result.payload.error == 1) {
                         setErrorMessage({
@@ -95,35 +84,31 @@ const Register = () => {
 
     return (
         <>
-            <div style={{ background: '#fff', padding: '30px', margin: '50px auto', width: '30%', borderRadius: '10px' }}>
-                <h3 >Register</h3>
-                <Form >
-                    <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Label>Email address</Form.Label>
-                        <Form.Control type="email" name='email' value={dataRegister.email} placeholder="Email" onChange={(e) => handleOnchangeUserLogin(e)} />
-                        {errorMessage.email && <p className='text-danger'>{errorMessage.email}</p>}
-                    </Form.Group>
-
-                    <Form.Group className="mb-3" controlId="formBasicPassword">
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" name='password' value={dataRegister.password} placeholder="Password" onChange={(e) => handleOnchangeUserLogin(e)} />
-                        {errorMessage.password && <p className='text-danger'>{errorMessage.password}</p>}
-                    </Form.Group>
-                    <Form.Group className="mb-3" controlId="formBasicPassword">
-                        <Form.Label>Confirm Password</Form.Label>
-                        <Form.Control type="password" name='confirmPassword' value={dataRegister.confirmPassword} placeholder="Confirm Password" onChange={(e) => handleOnchangeUserLogin(e)} />
-                        {errorMessage.confirmPassword && <p className='text-danger'>{errorMessage.confirmPassword}</p>}
-                    </Form.Group>
-                    <Button variant="primary" onClick={handleRegister}>
-                        Register
-                    </Button>
-                </Form>
-                <Nav>
-                    <Navbar.Text className='nav-link px-0' to='/register'>Already have an account? </Navbar.Text>
-                    <NavLink className='nav-link px-2 mx-2 bg-success rounded mb-0 text-white' to='/login'>Login</NavLink>
-                </Nav>
-            </div>
-
+            <form className='form-auth'>
+                <h3>Register</h3>
+                <div className='group'>
+                    <label>Email address</label>
+                    <input type="email" name='email' value={dataRegister.email} placeholder="Email" onChange={(e) => handleOnchangeUserLogin(e)} />
+                    {errorMessage.email && <p className='text-red-600'>{errorMessage.email}</p>}
+                </div>
+                <div className='group'>
+                    <label>Password</label>
+                    <input type="password" name='password' value={dataRegister.password} placeholder="Password" onChange={(e) => handleOnchangeUserLogin(e)} />
+                    {errorMessage.password && <p className='text-red-600'>{errorMessage.password}</p>}
+                </div>
+                <div className='group'>
+                    <label>Confirm Password</label>
+                    <input type="password" name='confirmPassword' value={dataRegister.confirmPassword} placeholder="Confirm Password" onChange={(e) => handleOnchangeUserLogin(e)} />
+                    {errorMessage.confirmPassword && <p className='text-red-600'>{errorMessage.confirmPassword}</p>}
+                </div>
+                <button className='btn-auth' onClick={handleRegister}>
+                    Register
+                </button>
+                <div className='group'>
+                    <span>Already have an account? </span>
+                    <Link className='text-red-700 font-semibold' to='/login'>Login</Link>
+                </div>
+            </form>
         </>
     )
 }

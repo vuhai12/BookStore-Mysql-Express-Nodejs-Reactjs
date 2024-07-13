@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { apiCreateOrder, apiGetOrder } from '../../services/OrderService'
+import { apiCreateOrder, apiGetOrders,apiGetOrderById } from '../../services/OrderService'
 
 
-export const fetchCreatNewOrderToolkit = createAsyncThunk(
-  'users/fetchCreatNewOrderToolkit',
+export const fetchCreateOrderToolkit = createAsyncThunk(
+  'users/fetchCreateOrderToolkit',
   async (data, { rejectWithValue }) => {
     try {
       const response = await apiCreateOrder(data)
@@ -14,12 +14,24 @@ export const fetchCreatNewOrderToolkit = createAsyncThunk(
   }
 )
 
-export const fetchGetOrderToolkit = createAsyncThunk(
-  'users/fetchGetOrderToolkit',
+export const fetchGetOrdersToolkit = createAsyncThunk(
+  'users/fetchGetOrdersToolkit',
   async (data, { rejectWithValue }) => {
     try {
-      const response = await apiGetOrder()
-      return response.orderData
+      const response = await apiGetOrders()
+      return response
+    } catch (error) {
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
+export const fetchGetOrderByIdToolkit = createAsyncThunk(
+  'users/fetchGetOrderByIdToolkit',
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await apiGetOrderById()
+      return response
     } catch (error) {
       return rejectWithValue(error.response.data)
     }
@@ -29,19 +41,28 @@ export const fetchGetOrderToolkit = createAsyncThunk(
 export const orderSlice = createSlice({
   name: 'order',
   initialState: {
-    listOrders: []
+    listOrders: [],
+    listOrderById:[]
   },
   reducers: {
   },
 
   extraReducers: (builder) => {
-    builder.addCase(fetchCreatNewOrderToolkit.fulfilled, (state, action) => {
+    builder.addCase(fetchCreateOrderToolkit.fulfilled, (state, action) => {
     })
+  },
 
-    builder.addCase(fetchGetOrderToolkit.fulfilled, (state, action) => {
-      state.listOrders = action.payload.rows
+  extraReducers: (builder) => {
+    builder.addCase(fetchGetOrdersToolkit.fulfilled, (state, action) => {
+      state.listOrders = action.payload
     })
+  },
 
+  extraReducers: (builder) => {
+    builder.addCase(fetchGetOrderByIdToolkit.fulfilled, (state, action) => {
+      console.log('action.payload',action.payload)
+      state.listOrderById = action.payload.orderData
+    })
   },
 })
 

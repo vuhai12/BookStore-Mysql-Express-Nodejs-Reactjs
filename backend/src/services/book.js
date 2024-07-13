@@ -43,9 +43,6 @@ export const getBooks = ({ page, limit, order, name, available, ...query }) =>
           },
         ],
       });
-
-      console.log('response with cate',response)
-
       resolve({
         error: response ? 0 : 1,
         message: response ? 'Got' : 'Cannot found',
@@ -78,40 +75,7 @@ export const getBookById = (bookID) => new Promise(async (resolve, reject) => {
   }
 })
 
-//CREATE
-// export const createNewBook = (body, fileData) =>
 
-//   new Promise(async (resolve, reject) => {
-//     try {
-
-//       const response = await db.Book.findOrCreate({
-//         where: { title: body?.title },
-//         //default (số ít): tạo 1 cột theo key/value đầu tiên trong object
-//         //defaults (số nhiều): tạo nhiều cột theo số cặp key/value trong object
-//         defaults: {
-//           ...body,
-//           id: generateId(),
-//           image: fileData?.path,
-//           filename: fileData?.filename
-//         },
-//       });
-
-//       resolve({
-//         error: response[1] ? 0 : 1, //true: 0 false: 1
-//         message: response[1] ? 'Created' : 'Cannot create new book',
-//       });
-
-//       if (fileData && !response[1]) cloudinary.uploader.destroy(fileData.filename);
-//     } catch (error) {
-//       //nếu việc thêm sách bị lỗi thì phải xóa ảnh trên cloudinary vì khi chạy nó sẽ chạy vào middleware để up ảnh lên trước
-//       reject(error);
-//       if (fileData) cloudinary.uploader.destroy(fileData.filename);
-//     }
-//   });
-
-
-
-//Create image lưu trực tiếp trên db
 
 export const createNewBook = (body, fileData) =>
 
@@ -130,40 +94,16 @@ export const createNewBook = (body, fileData) =>
         },
       });
 
-      console.log('response service book,',response)
-
       resolve({
         error: response[1] ? 0 : 1, //true: 0 false: 1
         message: response[1] ? 'Created' : 'Cannot create new book',
       });
-      // if (fileData && !response[1]) cloudinary.uploader.destroy(fileData.filename);
     } catch (error) {
-      //nếu việc thêm sách bị lỗi thì phải xóa ảnh trên cloudinary vì khi chạy nó sẽ chạy vào middleware để up ảnh lên trước
       reject(error);
-      // if (fileData) cloudinary.uploader.destroy(fileData.filename);
     }
   });
 
-//UPDATE
-// export const updateBook = ({ bid, ...body }, fileData) =>
-//   new Promise(async (resolve, reject) => {
-//     try {
-//       if (fileData) body.image = fileData?.path;
-//       const response = await db.Book.update(body, {
-//         where: { id: bid },
-//       });
-//       resolve({
-//         error: response[0] > 0 ? 0 : 1, //true: 0 false: 1
-//         message: response[0] ? `${response[0]} updated` : 'Cannot update',
-//       });
-//       if (fileData && !response[0] === 0) cloudinary.uploader.destroy(fileData.filename);
-//     } catch (error) {
-//       reject(error);
-//       if (fileData) cloudinary.uploader.destroy(fileData.filename);
-//     }
-//   });
 
-//UPDATE FILE LƯU TRỰC TIẾP TRÊN DB
 export const updateBook = ({ bid, ...body }, fileData) =>
   new Promise(async (resolve, reject) => {
     try {

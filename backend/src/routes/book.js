@@ -5,13 +5,12 @@ import { isCreatorOrAdmin, isAdmin } from '../middlewares/verify_role'
 import uploadCloud from '../middlewares/uploader';
 const router = express.Router()
 
-// router.use(verifyToken)
 //public routes
-// router.use(verifyToken)
+
 
 router.get('/:id', controllers.getBookById);
 router.get('/', controllers.getBooks)
-router.use(isAdmin)
+// router.use(isAdmin)
 router.use(verifyToken)
 //private routes
 

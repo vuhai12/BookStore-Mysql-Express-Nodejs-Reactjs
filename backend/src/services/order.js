@@ -1,82 +1,122 @@
+import { response } from 'express';
 import db from '../models';
-import { Op } from 'sequelize';
+import { Op, where } from 'sequelize';
 import { v4 as generateId } from 'uuid';
+import { isChecked, isDelivered, isPaid, status } from '../helpers/joi_schemas';
 const cloudinary = require('cloudinary').v2;
 
-export const createNewOrder = (body, id,carts) =>
+export const createOrder = (body, id) =>
 
   new Promise(async (resolve, reject) => {
     try {
-     console.log('id',id)
-      const order = await db.Order.create({
-        ...body,
-        userId: id
-      });
-
-      let orderDetail = []
-      carts.forEach((item) => {
-        orderDetail.push({
-          orderId: order.id,
-          bookId: item.bookId,
-          quantity: item.quantity,
-          price: item.price,
-          total: (+item.quantity * (+item.price))
-        })
-      })
-      const orderDetails = await db.OrderDetail.bulkCreate(orderDetail)
-      resolve({
-        error: (order && orderDetails) ? 0 : 1, //true: 0 false: 1
-        message: (order && orderDetails) ? 'Created' : 'Cannot create new order',
-      });
-    } catch (error) {
-      reject(error);
-    }
-  });
-
-export const getOrderById = (userId) =>
-
-  new Promise(async (resolve, reject) => {
-    try {
-
-      const response = await db.Order.findAll({
+      const { count, rows } = await db.CartBook.findAndCountAll({
         where: {
-          userId,
+          isChecked: true
         },
-      });
+      })
+      if (count > 0) {
+        const response = await db.Order.create(
+          {
+            id: generateId(),
+            totalPrices: 87999999,
+            paymentMethod: body.methodPayment,
+            status: 'Active',
+            isDelivered: false,
+            isPaid: false,
+            orderUserId: id,
+            // address:body.address
+          })
+
+        if (response && response.id) {
+          const data = body.listBookInCartChecked.map((item) => {
+            return {
+              id: generateId(),
+              orderBookId: response.id,
+              bookOrderId: item.books.id
+            }
+          })
+          const listBookInCartChecked = data.map((item) => {
+            return item.bookOrderId
+          })
+          const res = await db.OrderBook.bulkCreate(data)
+          if (res) {
+            const response = await db.CartBook.destroy({
+              where: {
+                bookCartId: {
+                  [Op.in]: listBookInCartChecked
+                },
+              },
+            });
+          }
+        }
+      }
       resolve({
         error: (response) ? 0 : 1, //true: 0 false: 1
-        message: (response) ? 'Got' : 'Order not found',
-        orderData: response
+        message: (response) ? 'Created' : 'Cannot create order',
       });
     } catch (error) {
       reject(error);
     }
   });
 
-  export const getOrders = ({ page, limit, order, ...query }) =>
-    new Promise(async (resolve, reject) => {
-      try {
-        const queries = { raw: true, nest: true };
-        const offset = !page || +page <= 1 ? 0 : +page - 1;
-        const fLimit = +limit || +process.env.LIMIT_ORDER; //nếu truyền vào limit thì lấy, còn nếu không thì lấy limit trong file .env
-        queries.offset = offset * fLimit;
-        queries.limit = fLimit;
-        if (order) queries.order = [order];
-        const response = await db.Order.findAndCountAll({
-          where: query,
-          ...queries,
-        });
-  console.log('response orrrrrrrrrrrr',response)
-        resolve({
-          error: response ? 0 : 1,
-          message: response ? 'Got' : 'Order not found',
-          orderData: response,
-        });
-      } catch (error) {
-        reject(error);
-      }
-    });
 
+export const getOrders = (id) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const response = await db.Order.findAll({
+        raw: true,
+        nest: true,
+        include: [{
+          model: db.Book,
+          as: 'books',
+          required: true,
+          // attributes: ['id', 'name'],
+          through: {
+            model: db.OrderBook,
+            as: 'orders',
+            // attributes: ['qty'],
+          }
+        }]
+      });
 
+      resolve({
+        error: response ? 0 : 1,
+        message: response ? 'Got' : 'Cannot found',
+        orderData: response,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
 
+export const getOrderById = (orderUserId) => 
+  new Promise(async (resolve, reject) => {
+    try {
+      const response = await db.Order.findAll({
+        where: {
+          orderUserId
+        },
+        raw: true,
+        nest: true,
+        include: [{
+          model: db.Book,
+          as: 'books',
+          required: true,
+          // attributes: ['id', 'name'],
+          through: {
+            model: db.OrderBook,
+            as: 'orders',
+            // attributes: ['qty'],
+          }
+        }]
+      })
 
+      resolve({
+        error: response ? 0 : 1,
+        message: response ? 'Got' : 'Cannot found',
+        orderData: response,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  })

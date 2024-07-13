@@ -1,14 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import Col from 'react-bootstrap/esm/Col'
-import Container from 'react-bootstrap/esm/Container'
-import Row from 'react-bootstrap/esm/Row'
-import Button from 'react-bootstrap/Button';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchGetBookByIdToolkit } from '../../redux/slides/bookSlice';
-import { useParams, useLocation,Navigate,useNavigate  } from 'react-router-dom';
+import { useParams, useLocation, Navigate, useNavigate } from 'react-router-dom';
 import { blobToBase64 } from '../../ultils/blobToBase64';
 import SelectQuantity from '../../components/SelectQuantity/SelectQuantity';
-import { decrementItem, incrementItem, addToCart } from '../../redux/slides/cartSlice';
+import { decrementItem, incrementItem, addToCart, fetchAddCartToolkit, fetchGetCartToolkit } from '../../redux/slides/cartSlice';
 import { jwtDecode } from 'jwt-decode'
 
 const BookDetail = () => {
@@ -17,11 +12,12 @@ const BookDetail = () => {
     // const bookDataById = useSelector((state) => state.user.bookDataById)
     // const quantityBook = useSelector((state) => state.cart.quantity)
     const location = useLocation();
-    let navigate = useNavigate(); 
-   
+    let navigate = useNavigate();
+    const listCart = useSelector((state) => state.cart.listCart)
     // useEffect(() => {
-    //     dispatch(fetchGetBookByIdToolkit(bookId.id))
-    // }, [])
+    //     // dispatch(fetchGetBookByIdToolkit(bookId.id))
+    //     dispatch(fetchGetCartToolkit())
+    // }, [listCart])
 
     const [quantity, setQuantity] = useState(1)
     const handleQuantity = useCallback(() => {
@@ -40,31 +36,65 @@ const BookDetail = () => {
     const token = localStorage.getItem("access_token");
 
     const handleAddCart = () => {
-        if(token){
+        if (token) {
             const { role_code } = jwtDecode(token)
-            if((role_code == 'R1' || role_code == 'R2')){
-                dispatch(addToCart({ bookId: location.state.props.id, quantity, price: location.state.props.price, image: location.state.props.image }))
-            }else{
+            if ((role_code == 'R1' || role_code == 'R2')) {
+                // dispatch(addToCart({ bookId: location.state.props.id, quantity, price: location.state.props.price, image: location.state.props.image }))
+                dispatch(fetchAddCartToolkit(
+                    {
+                        image: location.state.props.image,
+                        bid: String(location.state.props.id),
+                        quantity,
+                        totalPrices: (+location.state.props.price) * (+quantity),
+                        isChecked: '0'
+                    })).then(() => {
+                        dispatch(fetchGetCartToolkit())
+                    })
+
+            } else {
                 navigate('/login')
             }
-        }else{
+        } else {
             navigate('/login')
         }
     }
 
     return (
         <>
-            <Container>
-                <Row>
-                    <Col lg={5}>
-                        <div style={{ width: '30%' }}>
-                            <img
-                                src={location.state.props.image}
-                                // src={bookDataById.length>0 ? blobToBase64(bookDataById?.image):<></>}
-                                style={{ objectFit: 'cover', width: '50%' }}
-                            />
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }} >
+            <div>
+
+                <div className='p-[20px] w-full mt-[60px] flex flex-col sm:flex-row sm:relative'>
+                    <div style={{ width: '100%' }}>
+                        <img
+                            src={location.state.props.image}
+                            // src={bookDataById.length>0 ? blobToBase64(bookDataById?.image):<></>}
+                            style={{ objectFit: 'cover', width: '100%', height: '350px' }}
+                        />
+                    </div>
+                    <div style={{ width: '100%', padding: '20px' }}>
+                        <h3>{location.state.props.title}</h3>
+                        <h3 style={{ color: 'red', fontSize: '20px' }}>{location.state.props?.price.toLocaleString()} VNĐ</h3>
+                        <p className='mb-[10px]'>Số lượng</p>
+                        <SelectQuantity
+                            quantity={quantity}
+                            handleQuantity={handleQuantity}
+                            handleChangeQuantity={handleChangeQuantity}
+                        />
+                    </div>
+                    <div className='flex fixed bottom-0 z-50 bg-gray-300 w-full h-[60px] sm:w-[30%] sm:absolute sm:bottom-[-60px] ' >
+                    <button
+                        onClick={handleAddCart}
+                        className='basis-1 grow '
+                    >
+                        Thêm giỏ hàng
+                    </button>
+                    <button
+                        className='basis-1 grow bg-red-500 text-white '
+                    >
+                        Mua ngay
+                    </button>
+                </div>
+                    {/* <div style={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }} >
                             <Button
                                 onClick={handleAddCart}
                                 variant="link"
@@ -72,20 +102,22 @@ const BookDetail = () => {
                                 Thêm giỏ hàng
                             </Button>
                             <Button variant="danger">Mua ngay</Button>
-                        </div>
-                    </Col>
-                    <Col lg={7}>
+                        </div> */}
+                </div>
+                {/* <div style={{width:'50%',padding:'20px'}}>
                         <h3>{location.state.props.title}</h3>
-                        <h3 style={{ color: 'black', fontSize: '45px' }}>{location.state.props?.price} VNĐ</h3>
+                        <h3 style={{ color: 'red', fontSize: '45px' }}>{location.state.props?.price.toLocaleString()} VNĐ</h3>
                         <h5>Số lượng</h5>
                         <SelectQuantity
                             quantity={quantity}
                             handleQuantity={handleQuantity}
                             handleChangeQuantity={handleChangeQuantity}
                         />
-                    </Col>
-                </Row>
-            </Container>
+                    </div> */}
+
+                
+
+            </div>
         </>
 
 

@@ -15,7 +15,7 @@ const Search = ({ onKeySearch }) => {
         setKeyWord(e.target.value)
     }
     return (
-        <Form.Control value={keyWord} placeholder="Search" onChange={(e) => handleOnchangeSearch(e)} />
+        <input className='border-[1px] border-solid border-gray-500 rounded-[5px] p-[5px] my-[10px]' value={keyWord} placeholder="Search" onChange={(e) => handleOnchangeSearch(e)} />
     )
 }
 

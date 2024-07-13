@@ -1,10 +1,8 @@
-import './App.scss';
+import './App.css';
 import React, { Fragment } from 'react'
-import { Routes, Route, BrowserRouter as Router  } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { createBrowserHistory } from "history";
 import AppRoutes from './routes/AppRoutes'
-
 
 function App() {
 

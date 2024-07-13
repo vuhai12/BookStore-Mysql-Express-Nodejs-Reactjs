@@ -17,7 +17,8 @@ import { blobToBase64 } from '../../ultils/blobToBase64';
 import Pagination from '../../components/Pagination/Pagination'
 import { fetchGetListCategoryToolkit } from '../../redux/slides/userSlice'
 import { toast } from 'react-toastify'
-import { fetchGetOrderToolkit } from '../../redux/slides/orderSlice'
+import { fetchGetOrdersToolkit } from '../../redux/slides/orderSlice'
+// import { fetchGetOrderToolkit } from '../../redux/slides/orderSlice'
 
 
 
@@ -215,7 +216,7 @@ const AminPage = () => {
     const limit = 3
     useEffect(() => {
         dispatch(fetchGetListBookToolkit({ limit, pageCurent, searchString, }))
-        dispatch(fetchGetOrderToolkit())
+        dispatch(fetchGetOrdersToolkit())
     }, [pageCurent])
 
     const openAdd = () => {
@@ -249,7 +250,6 @@ const AminPage = () => {
         setIsShowAddModel(false)
     }
 
-    console.log('listOrders',listOrders)
     const handleAdd = () => {
         if (!validateAdd()) {
             const formData = new FormData();
@@ -415,8 +415,8 @@ const AminPage = () => {
             case 'users':
                 return (
                     <>
-                        <AminUser
-                        />
+                        {/* <AminUser
+                        /> */}
                     </>
 
                 )
@@ -462,22 +462,22 @@ const AminPage = () => {
         }
     }
 
-    return (
-        <Container>
-            <Row style={{ marginTop: '20px' }}>
-                <Col lg={2} style={{ background: 'white' }}>
-                    <SideBarAdmin
-                        listItems={items}
-                        fieldSideBar={fieldSideBar}
-                        handleGetValueItem={handleGetValueItem}
-                    />
-                </Col>
-                <Col lg={10} >
-                    {renderPage(fieldSideBar)}
-                </Col>
-            </Row>
-        </Container>
-    )
+    // return (
+    //     <Container>
+    //         <Row style={{ marginTop: '20px' }}>
+    //             <Col lg={2} style={{ background: 'white' }}>
+    //                 <SideBarAdmin
+    //                     listItems={items}
+    //                     fieldSideBar={fieldSideBar}
+    //                     handleGetValueItem={handleGetValueItem}
+    //                 />
+    //             </Col>
+    //             <Col lg={10} >
+    //                 {renderPage(fieldSideBar)}
+    //             </Col>
+    //         </Row>
+    //     </Container>
+    // )
 }
 
 export default AminPage

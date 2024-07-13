@@ -1,22 +1,34 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { apiAddCart, apiGetCart, } from '../../services/CartService'
 import { apiRegister, apiLogin, } from '../../services/AuthService'
 import { apiGetCategory, } from '../../services/CategoryService'
 import {
   apiDeleteUser,
   apiUpdateUser,
   apiGetUser,
-  apiCreateUser
+  apiCreateUser,
+  apiGetUserById,
+  apiLogout
 } from '../../services/UserService'
+import parseJson, {JSONError} from 'parse-json';
 
 
 export const fetchLoginToolkit = createAsyncThunk(
   'users/fetchLoginToolkit',
   async (body, { rejectWithValue }) => {
     try {
-      console.log('body',body)
       const response = await apiLogin(body.email, body.password)
-      console.log('response login',response)
+      return response
+    } catch (error) {
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
+export const fetchLogoutToolkit = createAsyncThunk(
+  'users/fetchLogoutToolkit',
+  async (body, { rejectWithValue }) => {
+    try {
+      const response = await apiLogout()
       return response
     } catch (error) {
       return rejectWithValue(error.response.data)
@@ -65,6 +77,7 @@ export const fetchUpdateNewUserToolkit = createAsyncThunk(
   'users/fetchUpdateNewUserToolkit',
   async (data, { rejectWithValue }) => {
     try {
+      console.log('data',data)
       const response = await apiUpdateUser(data)
       return response
     } catch (error) {
@@ -97,6 +110,18 @@ export const fetchDeleteNewUserToolkit = createAsyncThunk(
   }
 )
 
+export const fetchGetUserByIdToolkit = createAsyncThunk(
+  'users/fetchGetUserByIdToolkit',
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await apiGetUserById()
+      return response
+    } catch (error) {
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
 export const userSlice = createSlice({
   name: 'user',
   initialState: {
@@ -112,10 +137,16 @@ export const userSlice = createSlice({
     listUsers: [],
     listCategory: [],
     bookDataById: {},
-    quantityBook: 1
+    quantityBook: 1,
+    isOpenSideBarMenu: false,
+    userData:[]
   },
   reducers: {
-    globalLoading: (action, state) => {
+    openSideBarMenu: (state, action) => {
+      state.isOpenSideBarMenu = action.payload
+      
+    },
+    globalLoading: (state, action) => {
       state.statusLoading = action.payload
     },
 
@@ -130,6 +161,14 @@ export const userSlice = createSlice({
   },
 
   extraReducers: (builder) => {
+
+    builder.addCase(fetchGetUserByIdToolkit.fulfilled, (state, action) => {
+      state.userData = action.payload.userData
+      // Add user to the state array
+    })
+
+    builder.addCase(fetchGetUserByIdToolkit.pending, (state, action) => {
+    })
     // Add reducers for additional action types here, and handle loading state as needed
     builder.addCase(fetchLoginToolkit.pending, (state, action) => {
       // Add user to the state array
@@ -141,11 +180,15 @@ export const userSlice = createSlice({
       // Add user to the state array
       localStorage.setItem('access_token', action.payload?.access_token)
       localStorage.setItem('refresh_token', action.payload?.refresh_token)
-      localStorage.setItem('auth', true)
       state.access_token = action.payload.access_token,
         state.refresh_token = action.payload.refresh_token,
         state.auth = true,
         state.statusLoading = false
+    })
+
+    builder.addCase(fetchLogoutToolkit.fulfilled, (state, action) => {
+      // Add user to the state array
+      
     })
 
     builder.addCase(fetchRegisterToolkit.fulfilled, (state, action) => {
@@ -198,6 +241,7 @@ export const {
   startEdittingPostBook,
   showModal,
   hideModal,
+  openSideBarMenu
 } = userSlice.actions
 
 export default userSlice.reducer

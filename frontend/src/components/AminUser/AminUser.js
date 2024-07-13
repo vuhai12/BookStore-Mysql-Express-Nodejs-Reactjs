@@ -132,15 +132,15 @@ const fileds = [
 
 const role = [
     {
-        id:1,
-        code:'R1',
-        value:'Admin'
-    },  
+        id: 1,
+        code: 'R1',
+        value: 'Admin'
+    },
     {
-        id:2,
-        code:'R2',
-        value:'User'
-    },  
+        id: 2,
+        code: 'R2',
+        value: 'User'
+    },
     // {
     //     id:3,
     //     code:'R3',
@@ -346,51 +346,74 @@ const AminUser = () => {
 
     return (
         <>
-            <Container>
-                <Stack direction="horizontal" gap={2} >
-                    <Button onClick={openAdd}>Add</Button>
-                    <Button variant='success' onClick={handleExportData}>Export</Button>
-                </Stack>
+            <div className="mt-[60px] p-[10px]">
+                <div>
+                    <button className='rounded-[5px]  border-[1px] border-solid border-gray-500 px-[20px] py-[5px] mr-[10px] hover:bg-slate-600 hover:text-gray-50' onClick={openAdd}>Add</button>
+                    <button className='rounded-[5px] border-[1px] border-solid border-gray-500 px-[20px] py-[5px] hover:bg-red-600 hover:text-gray-50' onClick={handleExportData}>Export</button>
+                </div>
                 <Search onKeySearch={handleSearch} />
-                <Table striped bordered hover className='mt-3'>
-                    <thead>
-                        <tr>
-                            {/* <th><input type="checkbox" /></th> */}
-                            <th>No</th>
-                            <th>Avatar</th>
-                            <th onClick={() => handleSort('name')}>Name
-                                {optionsFiledSort[0].sort_by == 'DESC' ? <FaSortDown /> : <FaSortUp />}
-                            </th>
-                            <th onClick={() => handleSort('email')}>Email
-                                {optionsFiledSort[1].sort_by == 'DESC' ? <FaSortDown /> : <FaSortUp />}
-                            </th>
-                            <th onClick={() => handleSort('role_code')}>Role
-                                {optionsFiledSort[2].sort_by == 'DESC' ? <FaSortDown /> : <FaSortUp />}
-                            </th>
-                            <th colSpan={3} className='text-center'>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            listUsers && listUsers.length > 0 && listUsers.map((item, index) => {
-                                return (
-                                    <tr key={`user${index}`}>
-                                        {/* <td><input type="checkbox" /></td> */}
-                                        <td>{index + 1}</td>
-                                        {/* <td><img style={{ width: '50px', height: '50px' }} src={item?.avatar != null ? blobToBase64(item?.avatar) : ImageDefault}></img></td> */}
-                                        <td><img style={{ width: '50px', height: '50px' }} src={item?.avatar != null ? (item?.avatar) : ImageDefault}></img></td>
-                                        <td>{item.name}</td>
-                                        <td>{item.email}</td>
-                                        <td>{item.role_code}</td>
-                                        <td> <Button variant="primary" onClick={() => handleOpenEditUser(item)}>EDIT</Button></td>
-                                        <td> <Button variant="danger" onClick={() => handleDeleteUser(item.id)}>DELETE</Button></td>
-                                    </tr>
-                                )
-                            })
-                        }
-                    </tbody>
-                </Table>
-            </Container>
+                {/* <div class="inline-block min-w-full shadow rounded-lg overflow-hidden"> */}
+                <div className='overflow-auto '>
+                    <table className='w-full'>
+                        <thead>
+                            <tr>
+                                <th
+                                    className="px-[5px] border-x-[1px]  border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600  ">
+                                    No
+                                </th>
+                                <th
+                                    className="px-[5px] border-x-[1px] border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600  ">
+                                    Avatar
+                                </th>
+                                <th
+                                    className="px-[5px]  border-x-[1px] border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600  ">
+                                    Name
+                                    {optionsFiledSort[0].sort_by == 'DESC' ? <FaSortDown /> : <FaSortUp />}
+                                </th>
+                                <th
+                                    className="px-[5px] border-x-[1px] border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600  ">
+                                    Email
+                                    {optionsFiledSort[1].sort_by == 'DESC' ? <FaSortDown /> : <FaSortUp />}
+                                </th>
+                                <th
+                                    className="px-[5px] border-x-[1px] border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600  ">
+                                    Role
+                                    {optionsFiledSort[2].sort_by == 'DESC' ? <FaSortDown /> : <FaSortUp />}
+                                </th>
+                                <th
+                                    className="px-[5px] border-x-[1px] border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600  ">
+                                    Action
+                                </th>
+                                <th
+                                    className="px-[5px] border-x-[1px] border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600  ">
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                listUsers && listUsers.length > 0 && listUsers.map((item, index) => {
+                                    return (
+                                        <tr key={`user${index}`}>
+                                            {/* <td><input type="checkbox" /></td> */}
+                                            <td className="px-[5px] border-x-[1px]  border-gray-200 bg-white text-[12px]">{index + 1}</td>
+                                            {/* <td><img style={{ width: '50px', height: '50px' }} src={item?.avatar != null ? blobToBase64(item?.avatar) : ImageDefault}></img></td> */}
+                                            <td className="px-[5px] border-x-[1px]  border-gray-200 bg-white text-[12px]"><img style={{ width: '50px', height: '50px' }} src={item?.avatar != null ? (item?.avatar) : ImageDefault}></img></td>
+                                            <td className="px-[5px] border-x-[1px]  border-gray-200 bg-white text-[12px]">{item.name}</td>
+                                            <td className="px-[5px] border-x-[1px]  border-gray-200 bg-white text-[12px]">{item.email}</td>
+                                            <td className="px-[5px] border-x-[1px]  border-gray-200 bg-white text-[12px]">{item.role_code}</td>
+                                            <td className="px-[5px] border-x-[1px]  border-gray-200 bg-white text-[12px]"> <button className='bg-gray-700 rounded-[5px] text-white p-[5px]' onClick={() => handleOpenEditUser(item)}>EDIT</button></td>
+                                            <td className="px-[5px] border-x-[1px]  border-gray-200 bg-white text-[12px]"> <button className='bg-red-600 rounded-[5px] text-white p-[5px]' onClick={() => handleDeleteUser(item.id)}>DELETE</button></td>
+                                        </tr>
+                                    )
+                                })
+                            }
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
             <Pagination
                 totalPosts={5}
                 postsPerPage={limit}

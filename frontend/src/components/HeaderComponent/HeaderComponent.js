@@ -1,128 +1,240 @@
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import { useNavigate, NavLink } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import './Navbar.css';
+import Dropdown from './Dropdown';
 import { useDispatch, useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next'
-import Form from 'react-bootstrap/Form';
-import { createBrowserHistory } from "history";
-import { GrCart } from "react-icons/gr";
-import Badge from 'react-bootstrap/Badge';
-import InputComponent from '../InputComponent/InputComponent';
-import ButtonComponent from '../ButtonComponent/ButtonComponent';
-import { IoIosSearch } from "react-icons/io";
-import { MdOutlineAccountCircle } from "react-icons/md";
-import { WrapperAccount, WrapperAccountItem } from './style';
-import { useState } from 'react';
+import Badge from 'react-bootstrap/esm/Badge';
+import { fetchGetCartToolkit } from '../../redux/slides/cartSlice';
+import { jwtDecode } from 'jwt-decode';
+import { useTranslation } from 'react-i18next';
+import { fetchLogoutToolkit, openSideBarMenu } from '../../redux/slides/userSlice';
+import Toggle from '../Toggle/Toggle';
 import { fetchGetListBookToolkit } from '../../redux/slides/bookSlice';
-import { jwtDecode } from 'jwt-decode'
+import { FaSearch, FaShoppingCart, FaBars } from "react-icons/fa";
+import { IoClose } from "react-icons/io5";
 
-const HeaderComponent = () => {
 
+
+function HeaderComponent() {
+    const [dropdown, setDropdown] = useState(false);
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const listCart = useSelector((state) => state.cart.listCart)
     const { t, i18n } = useTranslation('translation')
     const currentLanguage = i18n.language
-    const path = createBrowserHistory().location.pathname
-    const dispatch = useDispatch()
+    const isOpenSideBarMenu = useSelector((state) => state.user.isOpenSideBarMenu)
 
-    const navigate = useNavigate()
-    const auth = localStorage.getItem('auth')
-    const logout = () => {
-        localStorage.removeItem('access_token')
-        localStorage.removeItem('refresh_token')
-        localStorage.setItem('auth', false)
+    const handleClick = () => {
+        dispatch(openSideBarMenu(!isOpenSideBarMenu))
     }
+    const closeMobileMenu = () => setClick(false);
 
-    const token = localStorage.getItem("access_token");
+    const onMouseEnter = () => {
+        if (window.innerWidth < 960) {
+            setDropdown(false);
+        } else {
+            setDropdown(true);
+        }
+    };
+
+    const onMouseLeave = () => {
+        if (window.innerWidth < 960) {
+            setDropdown(false);
+        } else {
+            setDropdown(false);
+        }
+    };
 
     const changeLanguage = (lng) => {
         i18n.changeLanguage(lng)
         localStorage.setItem('lng', lng)
     }
+    const token = localStorage?.getItem("access_token");
+    useEffect(() => {
+        if (token) {
+            dispatch(fetchGetCartToolkit())
+        }
+    }, [])
 
     const handleCart = () => {
-        if(token){
+        if (token) {
             const { role_code } = jwtDecode(token)
-            if((role_code == 'R1' || role_code == 'R2')){
+            if ((role_code == 'R1' || role_code == 'R2')) {
                 navigate('/book/cart')
-            }else{
-                
+            } else {
                 navigate('/login')
             }
-        }else{
+        } else {
             navigate('/login')
         }
-       
+    }
+    const [toggle, setToggle] = useState('vi');
+    const handleToggleChange = () => {
+        if (toggle == 'vi') {
+            setToggle('en');
+        } else {
+            setToggle('vi');
+        }
+        i18n.changeLanguage(toggle)
+    };
+
+    const handleLogin = () => {
+        navigate('/login')
     }
 
-    const listCart = useSelector((state) => state.cart.carts)
+    const handleLogout = () => {
+        dispatch(fetchLogoutToolkit()).then((result) => {
+            if (result.payload.error == 0) {
+                localStorage.clear()
+                dispatch(fetchGetCartToolkit()).then((result) => {
+                    if (result.error) {
+                        navigate('/login')
+                    }
+                })
 
-    console.log('listCart',listCart)
-    const [searchString,setSearchString] = useState('')
+            }
+        })
+    }
 
-    const limit = useSelector((state)=>state.book.limit)
-    const pageCurent =1
+    const [searchString, setSearchString] = useState('')
 
     const handleSearch = (e) => {
         setSearchString(e.target.value)
     }
 
-    const handleSubmit = ()=>{
-        dispatch(fetchGetListBookToolkit({limit,pageCurent,searchString:''}))
+    const handleSubmit = () => {
+        dispatch(fetchGetListBookToolkit({ limit: 2, pageCurent: 1, searchString }))
+    }
+    const [isOpenOverlay, setIsOpenOverlay] = useState(false)
+
+    const handleCloseOverlay = () => {
+        setIsOpenOverlay(false)
+    }
+    const handleOpenOverlay = () => {
+        setIsOpenOverlay(true)
     }
 
     return (
         <>
-            <Navbar expand="lg" className="bg-body-tertiary" style={{ background: 'white', paddingTop: '10px', paddingBottom: '10px' }}>
-                <Container>
-                    <Navbar.Brand href="#home">Book</Navbar.Brand>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="me-auto border-none">
-                            <NavLink className='nav-link' to='/'>{t('book.home')}</NavLink>
-                        </Nav>
-                        <Nav className="me-auto border-none">
-                            <InputComponent
-                                placeholder='Search'
-                                styleInput={{ padding: '10px', width: '300px' }}
-                                onChange={handleSearch}
-                            />
-                            <ButtonComponent
-                                icon={<IoIosSearch />}
-                                // textButton='Search'
-                                styleButton={{ width: '50px' }}
-                                onClick={handleSubmit}
-                            />
-                        </Nav>
+            <nav className='navbar w-[100%]'>
+                <div className='flex justify-between w-full items-center sm:justify-end'>
+                    <div className='mobile-menu-btn sm:hidden' onClick={handleOpenOverlay}>
+                        <FaBars size={30} />
+                    </div>
 
-                        <Nav style={{ display: 'flex', alignItems: 'center' }}>
-                            <Navbar.Text href="#home">{localStorage.getItem('access_token') ? localStorage.getItem('email') : ''}</Navbar.Text>
-                            <Form.Select aria-label="Default select example" onChange={(e) => changeLanguage(e.target.value)}>
-                                <option value="vi">Tiếng Việt</option>
-                                <option value="en">English</option>
-                            </Form.Select>
+                    <div className='flex items-center justify-between'>
+                        <div className='flex cursor-pointer relative grow mr-[10px]' onClick={handleCart}>
+                            <FaShoppingCart className='text-[25px] text-sky-900' />
+                            {listCart?.length > 0 && <div className='bg-red-500 w-[20px] h-[20px] rounded-[50%] text-white flex items-center justify-center text-[12px]' ><span>{listCart?.length}</span></div>}
+                        </div>
+                        <div className='w-[100px] grow my-[10px]'>
+                            <Toggle toggle={toggle} handleToggleChange={handleToggleChange} />
+                        </div>
+                    </div>
+                    <div className='navbar-item' >
+                        {/* <Link to='/' className='navbar-item-logo' onClick={closeMobileMenu}> */}
+                        {token && <div className='menu-icon' onClick={handleClick}>
+                            {/* <i className={click ? 'fas fa-times' : 'fas fa-bars'} /> */}
+                            <i className={false ? 'fas fa-times' : 'fas fa-bars'} />
+                        </div>}
+                        {/* </Link> */}
+                        <Link to='/' className='navbar-item-logo'
+                        // onClick={closeMobileMenu}
+                        >
+                            <span>Book</span>
+                        </Link>
+                        <div className='nav-group-search' >
+                            <FaSearch className='nav-icon-search' />
+                            <input onChange={handleSearch} />
+                            <button onClick={handleSubmit}>Tìm kiếm</button>
+                        </div>
+                    </div>
+                    <div className='navbar-item'>
+                        <ul className='nav-menu-item '>
+                            <li className='nav-item'>
+                                <Link to='/' className='nav-links-item'>
+                                    {t('book.home')}
+                                </Link>
+                            </li>
+                            <li
+                                className='nav-item'
+                                onMouseEnter={onMouseEnter}
+                                onMouseLeave={onMouseLeave}
+                            >
+                                <Link
+                                    to='/'
+                                    className='nav-links-item'
+                                >
+                                    Tài khoản <i className='fas fa-caret-down' />
+                                </Link>
+                                {dropdown && <Dropdown />}
+                            </li>
+
+                            {/* <li className='nav-item'>
                             <div style={{ display: 'flex', cursor: 'pointer' }} onClick={handleCart}>
-                                <GrCart style={{ fontSize: '30px', marginLeft: '30px', marginRight: '5px' }} />
+                                <FaShoppingCart className='text-[25px] text-sky-900' />
                                 {listCart?.length > 0 && <Badge bg="danger" style={{ display: 'flex', alignItems: 'center', width: '20px', height: '20px', borderRadius: '50%', justifyContent: 'center', lineHeight: '20px' }}>{listCart?.length}</Badge>}
                             </div>
-                            <WrapperAccount>
-                                <MdOutlineAccountCircle style={{ fontSize: '30px', marginLeft: '20px', marginRight: '5px' }} />
-                                <WrapperAccountItem className='dropdown-content'>
-                                    {localStorage.getItem('access_token') && (localStorage.getItem('role_code') == 'R1') ?
-                                        <>
-                                            <NavLink className='nav-link' to='/system/admin'>Admin</NavLink>
-                                            <NavLink className='nav-link' to='/login' onClick={logout}>
-                                                {t('logout')}</NavLink>
-                                        </>
-                                        :
-                                        <NavLink className='nav-link' to='/login'>{t('login')}</NavLink>}
-                                </WrapperAccountItem>
-                            </WrapperAccount>
-                        </Nav>
-                    </Navbar.Collapse>
-                </Container>
-            </Navbar>
+                        </li> */}
+
+                            {/* <li>
+                        <Link
+                            to='/sign-up'
+                            className='nav-links-item-mobile'
+                            onClick={closeMobileMenu}
+                        >
+                            Sign Up
+                        </Link>
+                    </li> */}
+                        </ul>
+                        <div className='w-[100px] grow'>
+                            <Toggle toggle={toggle} handleToggleChange={handleToggleChange} />
+                        </div>
+                        
+                    </div>
+
+                </div>
+
+
+                <div className='overlay'>
+                    {/* <div className={`nav-mobile ${isOpenOverlay ?'translate-x-[-100%]':'translate-x-[-100%]' }} `}> */}
+                    <div className={`nav-mobile ${isOpenOverlay ? 'translate-x-[0%]' : 'translate-x-[-100%]'} `}>
+                        <div className='close-mobile-menu-btn' onClick={handleCloseOverlay}>
+                            <IoClose size={30} />
+                        </div>
+                        <div className={`nav-group-search mx-auto mt-[50px]`} >
+                            <FaSearch className='nav-icon-search' />
+                            <input onChange={handleSearch} />
+                            {/* <div className='flex cursor-pointer my-[5px]' onClick={handleCart}>
+                                <FaShoppingCart className='text-[25px] text-sky-900' />
+                                {listCart?.length > 0 && <Badge bg="danger" style={{ display: 'flex', alignItems: 'center', width: '20px', height: '20px', borderRadius: '50%', justifyContent: 'center', lineHeight: '20px' }}>{listCart?.length}</Badge>}
+                            </div> */}
+                        </div>
+                        <ul className='nav-mobile-items'>
+                            <li>Trang chủ</li>
+                            <li>Tài khoản</li>
+                        </ul>
+                        {!token ?
+                            <div className='grow'>
+                                <button onClick={handleLogin} className='btn-auth'>Sign In</button>
+                            </div>
+                            :
+                            <div className='grow'>
+                                <button onClick={handleLogout} className='btn-auth'>Logout</button>
+                            </div>
+                        }
+
+
+
+                    </div>
+
+                    <div className={`nav-overlay ${isOpenOverlay ? 'block' : 'hidden'}`} onClick={handleCloseOverlay} />
+
+                </div>
+
+            </nav>
         </>
-    )
+    );
 }
 
-export default HeaderComponent
+export default HeaderComponent;

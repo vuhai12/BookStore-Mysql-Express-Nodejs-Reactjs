@@ -13,6 +13,9 @@ module.exports = {
       code: {
         type: Sequelize.STRING
       },
+      // role_code: {
+      //   type: Sequelize.STRING
+      // },
       value: {
         type: Sequelize.STRING
       },

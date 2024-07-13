@@ -26,9 +26,7 @@ export const register = ({ email, password }) => new Promise(async (resolve, rej
         resolve({
             error: response[1] ? 0 : 1,
             message: response[1] ? 'Register successfully' : 'Email is already registered',
-          
         })
-       
     } catch (error) {
         reject(error)
     }
@@ -53,6 +51,11 @@ export const login = ({ email, password }) => new Promise(async (resolve, reject
         //nếu response là null, isChecked = null, nếu không thì thực hiện so sánh password
         const isChecked = response && bcrypt.compareSync(password, response.password)
         //mã hóa id, email và role_code ra thành token, để phục vụ cho việc phân quyền 
+        const responeseProfile = isChecked ? await db.ProfileUser.create({
+            id: generateId(),
+            address: 'Viet Nam, Ha Noi',
+            profileUserId: response.id
+        }) : null
 
         const accessToken = isChecked ? jwt.sign({
             id: response.id,
@@ -95,6 +98,22 @@ export const login = ({ email, password }) => new Promise(async (resolve, reject
                 where: { id: response.id }
             })
         }
+    } catch (error) {
+        reject(error)
+    }
+})
+export const logout = (user) => new Promise(async (resolve, reject) => {
+    try {
+        const { id } = user
+        const response = await db.User.update({ refresh_token: null }, {
+            where: { id },
+            raw: true,
+        })
+        resolve({
+            error: response ? 0 : 1,
+            message: response ? 'Logout success' : 'Logout failed'
+        })
+
     } catch (error) {
         reject(error)
     }

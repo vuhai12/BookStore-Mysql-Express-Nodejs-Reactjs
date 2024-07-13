@@ -11,13 +11,12 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
-            Cart.belongsTo(models.User, { foreignKey: 'cartId' });
-            Cart.belongsToMany(models.Book, { through: 'CartDetail', foreignKey: 'cartId', otherKey: 'bookCartId' });
+            Cart.belongsTo(models.User, { foreignKey: 'cartUserId', as: 'CartUserData' });
+            Cart.belongsToMany(models.Book, { through: 'CartBooks',as:'books' ,foreignKey: 'cartBookId', otherKey:'bookCartId' });
         }
     }
     Cart.init({
-        quantity: DataTypes.INTEGER,
-        
+        cartUserId: DataTypes.STRING,
     }, {
         sequelize,
         modelName: 'Cart',

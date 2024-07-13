@@ -9,6 +9,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.STRING
       },
+     
       title: {
         type: Sequelize.STRING
       },
@@ -33,6 +34,10 @@ module.exports = {
       category_code: {
         type: Sequelize.STRING
       },
+      // isChecked: {
+      //   type: Sequelize.BOOLEAN,
+      //   defaultValue: false
+      // }, 
       createdAt: {
         allowNull: false,
         type: 'TIMESTAMP', 

@@ -5,19 +5,30 @@ import { FiMinus } from "react-icons/fi";
 
 const SelectQuantity = ({ handleChangeQuantity, quantity, handleQuantity }) => {
     return (
-        <div style={{ display: 'flex' }}>
+        <div className='flex' >
             <span
+                className='cursor-pointer w-[30px] h-[30px] text-center 
+                border-solid border-[1px] border-gray-600
+                flex items-center justify-center
+                '
                 onClick={() => { handleChangeQuantity('minus') }}
-                style={{ cursor: 'pointer', border: '1px solid gray', marginRight: '15px', width: '50px', height: '50px', lineHeight: '50px', display: 'inline-block', textAlign: 'center' }}>
-                <FiMinus />
+            >
+                <FiMinus size={20} />
             </span>
             <span
-                style={{ border: '1px solid gray', fontWeight: 'bold', marginRight: '15px', width: '50px', height: '50px', lineHeight: '50px', display: 'inline-block', textAlign: 'center' }}>
+                className='cursor-pointer w-[30px] h-[30px] text-center 
+              border-solid border-[1px] border-gray-600
+              flex items-center justify-center
+              '>
                 {quantity}
             </span>
             <span
                 onClick={() => { handleChangeQuantity('plus') }}
-                style={{ cursor: 'pointer', border: '1px solid gray', marginRight: '15px', width: '50px', height: '50px', lineHeight: '50px', display: 'inline-block', textAlign: 'center' }}>
+                className='cursor-pointer w-[30px] h-[30px] text-center 
+                border-solid border-[1px] border-gray-600
+                flex items-center justify-center
+                '
+            >
                 <FaPlus />
             </span>
         </div>

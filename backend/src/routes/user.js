@@ -8,11 +8,12 @@ import uploadCloud from '../middlewares/uploader';
 const router = express.Router();
 
 // router.use(verifyToken);
-router.get('/:id', controllers.getCurrent);
+
 
 router.use(verifyToken);
-router.use(isAdmin);
-
+// router.post('/logout',verifyToken, controllers.logout)
+// router.use(isAdmin);
+router.get('/account', controllers.getCurrent);
 router.get('/', controllers.getAllUsers);
 router.post('/',uploadCloud.single('avatar'), controllers.createNewUser)
 

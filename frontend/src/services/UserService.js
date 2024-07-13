@@ -12,6 +12,11 @@ export const apiGetUser = (limit, pageCurent, searchString, field, sort) => {
     }
 }
 
+export const apiGetUserById = () => {
+  
+    return axiosConfig.get(`/user/account`)
+}
+
 
 // export const apiGetUser = (limit, pageCurent, searchString) =>
 
@@ -22,3 +27,5 @@ export const apiCreateUser = (data) => axiosConfig.post('/user', data)
 export const apiUpdateUser = (data) => axiosConfig.put('/user', data)
 
 export const apiDeleteUser = (id) => axiosConfig.delete(`/user`, { params: { bids: id } })
+
+export const apiLogout = () => axiosConfig.post('/auth/logout')

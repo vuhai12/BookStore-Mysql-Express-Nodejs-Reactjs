@@ -51,7 +51,6 @@ export const getBookById = async (req, res) => {
 export const createNewBook = async (req, res) => {
     try {
         // const fileData = req.file
-       console.log('req.body',req.body)
         const fileData = req.file
         //tiền xử lý
         const { error } = Joi.object({ title, price, available, category_code, image, description }).validate({ ...req.body, image: fileData?.path })
@@ -59,7 +58,7 @@ export const createNewBook = async (req, res) => {
             // if(fileData) cloudinary.uploader.destroy(fileData.filename)
             return badRequest(error.details[0].message, res)
         }
-        const response = await services.createNewBook(req.body,fileData)
+        const response = await services.createNewBook(req.body, fileData)
         return res.status(200).json(response)
         // return res.status(200).json('ok')
     } catch (error) {
@@ -73,7 +72,7 @@ export const createNewBook = async (req, res) => {
 export const updateBook = async (req, res) => {
     try {
         // console.log('req', JSON.stringify(req.body))
-      
+
         const fileData = req.file
         // const fileData = req.file
         //tiền xử lý
@@ -83,7 +82,7 @@ export const updateBook = async (req, res) => {
             return badRequest(error.details[0].message, res)
         }
         // const response = await services.updateBook(req.body, fileData)
-        const response = await services.updateBook(req.body,fileData)
+        const response = await services.updateBook(req.body, fileData)
         return res.status(200).json(response)
         // return res.status(200).json('ok')
 

@@ -2,6 +2,7 @@ import userReducer from './slides/userSlice';
 import bookReducer from './slides/bookSlice';
 import cartReducer from "./slides/cartSlice";
 import orderReducer from "./slides/orderSlice";
+import profileUserReducer from "./slides/profileUserSlice";
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import storage from 'redux-persist/lib/storage'
 import localforage from 'localforage';
@@ -20,15 +21,18 @@ import thunk from 'redux-thunk';
 
 const persistConfig = {
   key: 'root',
-  storage: localforage,
-  whitelist:['cart']
+  // storage: localforage,
+  storage: storage,
+  whitelist:['']
 }
 
 const rootReducer = combineReducers({
   cart: cartReducer,
   user: userReducer,
   order:orderReducer,
-  book:bookReducer
+  book:bookReducer,
+  profileUser:profileUserReducer,
+
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

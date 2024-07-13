@@ -8,18 +8,34 @@ import OrderSuccess from '../pages/orderSuccess/OrderSuccess';
 import MyOrder from '../pages/myOrder/MyOrder';
 import AminPage from '../pages/adminPage/AminPage';
 import NotFoundPage from '../components/NotFoundPage/NotFoundPage'; 
+import UserInfo from '../components/UserInfo/UserInfo';
+import UserOrder from '../components/UserOrder/UserOrder';
+import AminOrder from '../components/AminOrder/AminOrder';
+import AminUser from '../components/AminUser/AminUser';
+import AminBook from '../components/AminBook/AminBook';
 
 export const routeAdmin = [
     {
-        path: '/system/admin',
-        page: AminPage,
+        path: '/system/admin/book',
+        page: AminBook,
         isShowHeader: true
     },
-]
-
-export const routeUser = [
+    {
+        path: '/system/admin/order',
+        page: AminOrder,
+        isShowHeader: true
+    },
+    {
+        path: '/system/admin/user',
+        page: AminUser,
+        isShowHeader: true
+    },
     
    
+]
+
+export const routeAdminUser = [
+  
    
     {
         path: '/book/cart',
@@ -32,15 +48,26 @@ export const routeUser = [
         isShowHeader: true
     }, 
     {
-        path: '/order-success',
-        page: OrderSuccess,
+        path: '/user/info',
+        page: UserInfo,
         isShowHeader: true
     },
+]
+
+export const routeUser = [
+    
+    
+    // {
+    //     path: '/user/info',
+    //     page: UserInfo,
+    //     isShowHeader: true
+    // },
     {
-        path: '/my-order',
-        page: MyOrder,
+        path: '/user/order',
+        page: UserOrder,
         isShowHeader: true
     },
+    
    
 ]
 
@@ -50,21 +77,13 @@ export const routePublic = [
         page: Home,
         isShowHeader: true
     },
-    {
-        path: '/login',
-        page: Login,
-        isShowHeader: false,
-    },
-    {
-        path: '/register',
-        page: Register,
-        isShowHeader: false
-    },
+   
     {
         path: '/',
         page: Home,
         isShowHeader: true
     },
+    
     {
         path: '/book/:id',
         page: BookDetail,
@@ -75,5 +94,22 @@ export const routePublic = [
     //     path: '*',
     //     page: NotFoundPage
     // },
+]
+
+export const routeAuth = [
+    
+    {
+        path: '/login',
+        page: Login,
+        isShowHeader: true,
+    },
+    {
+        path: '/register',
+        page: Register,
+        isShowHeader: true
+    },
+    
+    
+    
 ]
 

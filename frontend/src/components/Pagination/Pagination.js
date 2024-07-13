@@ -24,24 +24,24 @@ const Pagination = ({ totalPosts, postsPerPage, setCurrentPage, currentPage }) =
     return (
         <>
             {pageCount >= 1 &&
-                <div className='pagination '>
-                    <Button className='mx-2' disabled={currentPage == 1} onClick={() => handlePre(currentPage)}>Pre</Button>
+                <div className='pagination text-center flex justify-center'>
+                    <button className='' disabled={currentPage == 1} onClick={() => handlePre(currentPage)}>Pre</button>
                     {pages.map((page, index) => {
                         return (
 
-                            <Button
-                                // className={page == currentPage ? 'active mx-2' : 'mx-2'}
+                            <button
+                                className={page == currentPage ? 'w-[30px] h-[30px] mx-3 border-[1px] border-solid border-gray-500 rounded-[5px] p-[8px] flex flex-row items-center' : 'mx-3'}
                                 key={index}
                                 onClick={() => setCurrentPage(page)}
-                                variant={page == currentPage ? 'warning' :'primary'}
-                                className='mx-2'
+                               
+                                
                             >
                                 {page}
-                            </Button>
+                            </button>
 
                         )
                     })}
-                    <Button className='mx-2' disabled={currentPage == pageCount} onClick={() => handleNext(currentPage)}>Next</Button>
+                    <button className='mx-2' disabled={currentPage == pageCount} onClick={() => handleNext(currentPage)}>Next</button>
                 </div>
             }
         </>

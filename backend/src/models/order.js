@@ -11,19 +11,18 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
-            Order.belongsTo(models.User, { foreignKey: 'userId' });
-            Order.belongsToMany(models.Book, { through: 'OrderDetail', foreignKey: 'orderId', otherKey: 'bookId' });
-            Order.hasMany(models.OrderDetail, { foreignKey: 'orderId' });
+            Order.belongsTo(models.User, { foreignKey: 'orderUserId', as: 'orderUserData' });
+            Order.belongsToMany(models.Book, { through: 'OrderBooks', as: 'books',foreignKey: 'orderBookId',otherkey:'bookOrderId'});
+            Order.belongsToMany(models.CartBook, { through: 'OrderCartBooks',foreignKey: 'orderCartBookId',otherkey:'cartBookOrderId'});
         }
     }
     Order.init({
-        quantity: DataTypes.INTEGER,
-        total: DataTypes.DECIMAL,
+        totalPrices: DataTypes.INTEGER,
         paymentMethod: DataTypes.STRING,
-        paymentDetails: DataTypes.TEXT,
-        isPaid:DataTypes.BOOLEAN,
-        isDelivered:DataTypes.BOOLEAN,
-        status:DataTypes.STRING,
+        orderUserId: DataTypes.STRING,
+        status: DataTypes.STRING,
+        isDelivered: DataTypes.BOOLEAN,
+        isPaid: DataTypes.BOOLEAN,
     }, {
         sequelize,
         modelName: 'Order',

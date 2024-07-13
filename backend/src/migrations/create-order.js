@@ -6,27 +6,18 @@ module.exports = {
       //id, createdAt và updateAt không cần sửa, quan tâm những trường mình cần.
       id: {
         allowNull: false,
-        autoIncrement: true,
+        // autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
-      },
-      quantity: {
-        type: Sequelize.INTEGER
-      },
-      orderId: {
-        type: Sequelize.INTEGER
-      },
-      userId: {
         type: Sequelize.STRING
       },
-      total: {
-        type: Sequelize.DECIMAL
+      orderUserId: {
+        type: Sequelize.STRING
+      },
+      totalPrices: {
+        type: Sequelize.INTEGER
       },
       paymentMethod: {
         type: Sequelize.STRING
-      },
-      paymentDetails: {
-        type: Sequelize.TEXT
       },
       status: {
         type: Sequelize.STRING

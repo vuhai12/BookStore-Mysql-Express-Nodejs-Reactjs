@@ -19,7 +19,7 @@ const multer = require('multer');
 // const uploadCloud = multer({ storage });
 
 // module.exports = uploadCloud;
-console.log('ssssssssssssssssssssss')
+
 
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {

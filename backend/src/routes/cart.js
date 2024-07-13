@@ -13,7 +13,13 @@ router.use(isCreatorOrAdmin)
 
 
 router.post('/', controllers.addCart)
-router.get('/', controllers.getCart)
+router.get('/', controllers.getCartById)
+router.get('/checked', controllers.getBookInCartChecked)
+router.delete('/', controllers.deleteBookInCart)
+router.put('/', controllers.updateCheckBookCart)
+router.put('/quantity', controllers.updateQuantityBookInCart)
+router.put('/checked-all', controllers.updateCheckAllBookCart)
+router.delete('/checked-all', controllers.deleteCheckAllBookCart)
 
 
 
