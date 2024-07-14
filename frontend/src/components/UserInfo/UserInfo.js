@@ -127,22 +127,22 @@ const UserInfo = () => {
 
   return (
     <>
-      <h5 className='mt-[70px] ml-[10px]'>Cập nhật Thông tin cá nhân</h5>
-      <div className='flex flex-col sm:flex-row mt-[60px] items-center'>
-        <div  className='sm:p-[20px] sm:basis-[30%] sm:text-center'>
+      <h5 className='mt-[80px] ml-[50px]'>Cập nhật Thông tin cá nhân</h5>
+      <div className='flex flex-col sm:flex-row mt-[60px] items-center sm:w-[60%]'>
+        <div className='sm:p-[10px] sm:basis-[30%] sm:text-center'>
           {items.map((item) => {
             if (item.type == 'file') {
               return (
-                <div >
+                < >
                   {
-                    <div>
-                      <label htmlFor='avatar'>
+                    <div className='sm:mx-auto sm:my-0'>
+                      <label htmlFor='avatar' className='sm:inline-block'>
                         <img src={!item.value ? ImageDefault : item.value} style={{ width: '100px', height: '100px', borderRadius: '50%', objectFit: 'cover' }} />
                       </label>
                       <input hidden="true" type='file' name={item.lable} id='avatar' onChange={(e) => handleUpdateUserData(item, e)} />
                     </div>
                   }
-                </div>
+                </>
               )
             }
           })}
@@ -165,11 +165,12 @@ const UserInfo = () => {
               )
             }
           })}
+          <div className='sm:mt-[20px]'>
+            <button style={{ width: '100px', lineHeight: '30px', height: '30px', border: '1px solid blue', borderRadius: '5px', }} onClick={handleUpdate}>Lưu</button>
+          </div>
         </div>
       </div>
-      <div className='text-center'>
-        <button style={{ width: '100px', lineHeight: '30px', height: '30px', border: '1px solid blue', borderRadius: '5px', }} onClick={handleUpdate}>Lưu</button>
-      </div>
+
     </>
   )
 }

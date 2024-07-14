@@ -89,7 +89,7 @@
     }
 
     .navbar-item {
-        @apply flex grow h-[60px] items-center hidden
+        @apply flex grow h-[60px] items-center hidden sm:block
     }
 
     .navbar-item-logo {
@@ -114,6 +114,6 @@
     }
 
     .nav-item {
-        @apply text-slate-900 grow h-[60px] flex items-center
+        @apply text-slate-900 grow h-[60px] flex items-center sm:mr-[20px]
     }
 }

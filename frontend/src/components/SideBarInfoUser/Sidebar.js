@@ -23,7 +23,7 @@ const Sidebar = ({ children }) => {
 
   const sidebarData = roleCode() == 'R2' ? SidebarDataUser : SidebarDataAdmin
 
-  const [showSideBar, setShowSideBar] = useState(false)
+  const [showSideBar, setShowSideBar] = useState(true)
 
   const handleShowSideBar = () => {
     setShowSideBar(!showSideBar)

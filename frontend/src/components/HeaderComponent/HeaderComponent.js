@@ -30,19 +30,22 @@ function HeaderComponent() {
     const closeMobileMenu = () => setClick(false);
 
     const onMouseEnter = () => {
-        if (window.innerWidth < 960) {
-            setDropdown(false);
-        } else {
-            setDropdown(true);
-        }
+        setDropdown(true);
+        // if (window.innerWidth < 960) {
+        //     setDropdown(false);
+        // } else {
+        //     setDropdown(true);
+        // }
     };
 
     const onMouseLeave = () => {
-        if (window.innerWidth < 960) {
-            setDropdown(false);
-        } else {
-            setDropdown(false);
-        }
+       
+        setDropdown(false);
+        // if (window.innerWidth < 960) {
+        //     setDropdown(false);
+        // } else {
+        //     setDropdown(false);
+        // }
     };
 
     const changeLanguage = (lng) => {
@@ -117,67 +120,59 @@ function HeaderComponent() {
     return (
         <>
             <nav className='navbar w-[100%]'>
-                <div className='flex justify-between w-full items-center sm:justify-end'>
+                <div className='flex justify-between w-full items-center sm:justify-between'>
                     <div className='mobile-menu-btn sm:hidden' onClick={handleOpenOverlay}>
                         <FaBars size={30} />
                     </div>
-
-                    <div className='flex items-center justify-between'>
-                        <div className='flex cursor-pointer relative grow mr-[10px]' onClick={handleCart}>
-                            <FaShoppingCart className='text-[25px] text-sky-900' />
-                            {listCart?.length > 0 && <div className='bg-red-500 w-[20px] h-[20px] rounded-[50%] text-white flex items-center justify-center text-[12px]' ><span>{listCart?.length}</span></div>}
-                        </div>
-                        <div className='w-[100px] grow my-[10px]'>
-                            <Toggle toggle={toggle} handleToggleChange={handleToggleChange} />
-                        </div>
-                    </div>
-                    <div className='navbar-item' >
+                    <div className='navbar-item sm:flex' >
                         {/* <Link to='/' className='navbar-item-logo' onClick={closeMobileMenu}> */}
                         {token && <div className='menu-icon' onClick={handleClick}>
                             {/* <i className={click ? 'fas fa-times' : 'fas fa-bars'} /> */}
                             <i className={false ? 'fas fa-times' : 'fas fa-bars'} />
                         </div>}
                         {/* </Link> */}
-                        <Link to='/' className='navbar-item-logo'
+                        <Link to='/' className='navbar-item-logo sm:ml-[30px]'
                         // onClick={closeMobileMenu}
                         >
                             <span>Book</span>
                         </Link>
-                        <div className='nav-group-search' >
+                        <div className='nav-group-search sm:ml-[80px] sm:w-[50%]' >
                             <FaSearch className='nav-icon-search' />
-                            <input onChange={handleSearch} />
+                            <input onChange={handleSearch} className='sm:pl-[50px]'/>
                             <button onClick={handleSubmit}>Tìm kiếm</button>
                         </div>
                     </div>
-                    <div className='navbar-item'>
-                        <ul className='nav-menu-item '>
-                            <li className='nav-item'>
-                                <Link to='/' className='nav-links-item'>
-                                    {t('book.home')}
-                                </Link>
-                            </li>
-                            <li
-                                className='nav-item'
-                                onMouseEnter={onMouseEnter}
-                                onMouseLeave={onMouseLeave}
-                            >
-                                <Link
-                                    to='/'
-                                    className='nav-links-item'
-                                >
-                                    Tài khoản <i className='fas fa-caret-down' />
-                                </Link>
-                                {dropdown && <Dropdown />}
-                            </li>
 
-                            {/* <li className='nav-item'>
+                    <div className='flex items-center justify-between'>
+                        <div className='navbar-item'>
+                            <ul className='nav-menu-item '>
+                                <li className='nav-item '>
+                                    <Link to='/' className='nav-links-item'>
+                                        {t('book.home')}
+                                    </Link>
+                                </li>
+                                <li
+                                    className='nav-item'
+                                    onMouseEnter={onMouseEnter}
+                                    onMouseLeave={onMouseLeave}
+                                >
+                                    <Link
+                                        to='/'
+                                        className='nav-links-item'
+                                    >
+                                        Tài khoản <i className='fas fa-caret-down' />
+                                    </Link>
+                                    {dropdown && <Dropdown />}
+                                </li>
+
+                                {/* <li className='nav-item'>
                             <div style={{ display: 'flex', cursor: 'pointer' }} onClick={handleCart}>
                                 <FaShoppingCart className='text-[25px] text-sky-900' />
                                 {listCart?.length > 0 && <Badge bg="danger" style={{ display: 'flex', alignItems: 'center', width: '20px', height: '20px', borderRadius: '50%', justifyContent: 'center', lineHeight: '20px' }}>{listCart?.length}</Badge>}
                             </div>
                         </li> */}
 
-                            {/* <li>
+                                {/* <li>
                         <Link
                             to='/sign-up'
                             className='nav-links-item-mobile'
@@ -186,16 +181,32 @@ function HeaderComponent() {
                             Sign Up
                         </Link>
                     </li> */}
-                        </ul>
-                        <div className='w-[100px] grow'>
+                            </ul>
+                            {/* <div className='w-[100px] grow'>
+                                <Toggle toggle={toggle} handleToggleChange={handleToggleChange} />
+                            </div> */}
+
+                        </div>
+                      
+                        <div className='flex cursor-pointer relative grow mr-[30px]' onClick={handleCart}>
+                            <FaShoppingCart className='text-[25px] text-sky-900' />
+                            {listCart?.length > 0 && <div className='bg-red-500 w-[20px] h-[20px] rounded-[50%] text-white flex items-center justify-center text-[12px]' ><span>{listCart?.length}</span></div>}
+                        </div>
+                        <div className='grow my-[10px] sm:mr-[10px]'>
                             <Toggle toggle={toggle} handleToggleChange={handleToggleChange} />
                         </div>
+                        {!token ?
+                            <div className='grow hidden sm:block'>
+                                <button onClick={handleLogin} className='btn-auth sm:px-[10px]'>Sign In</button>
+                            </div>
+                            :
+                            <div className='grow hidden sm:block ' >
+                                <button onClick={handleLogout} className='btn-auth sm:px-[10px]'>Logout</button>
+                            </div>
+                        }
                         
                     </div>
-
                 </div>
-
-
                 <div className='overlay'>
                     {/* <div className={`nav-mobile ${isOpenOverlay ?'translate-x-[-100%]':'translate-x-[-100%]' }} `}> */}
                     <div className={`nav-mobile ${isOpenOverlay ? 'translate-x-[0%]' : 'translate-x-[-100%]'} `}>
