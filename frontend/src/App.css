@@ -13,7 +13,7 @@
         @apply w-[100%] h-[100%]
     }
     body { 
-        @apply w-[100%] h-[100%] 
+        @apply w-[100%] h-[100%] text-[15px]
     }
     #root {
         @apply w-[100%] h-[100%] 
@@ -52,7 +52,7 @@
         @apply fixed top-0 bottom-0 left-0 right-0 bg-[rgba(0,0,0,0.3)] z-10
      }
     .btn-auth {
-        @apply my-[10px] rounded-[4px] border-none w-[100%] h-[30px] cursor-pointer bg-sky-900 text-[16px] text-zinc-50 hover:bg-neutral-200 hover:text-slate-900 hover:duration-75 transition duration-0
+        @apply my-[10px] rounded-[4px] border-none w-[100%] h-[30px] cursor-pointer bg-sky-900 text-zinc-50 hover:bg-neutral-200 hover:text-slate-900 hover:duration-75 transition duration-0
     }
 
     .dropdown-menu-item {
@@ -77,7 +77,7 @@
     }
 
     .form-auth h3{
-        @apply mb-3 text-center font-bold text-3xl
+        @apply mb-3 text-center font-bold 
     }
 
     .group {
@@ -85,7 +85,7 @@
     }
 
     .navbar {
-        @apply bg-gray-300 h-[60px] flex items-center text-[17px] px-[30px] fixed top-0
+        @apply bg-gray-300 h-[60px] flex items-center px-[30px] fixed top-0
     }
 
     .navbar-item {

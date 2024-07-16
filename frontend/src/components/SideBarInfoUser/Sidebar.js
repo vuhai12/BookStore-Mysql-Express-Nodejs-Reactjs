@@ -31,7 +31,7 @@ const Sidebar = ({ children }) => {
 
   return (
     <>
-      <div className='flex ' >
+      <div className='flex sm:h-full' >
         {/* <nav className={`sidebar ${isOpenSideBarMenu ? "inactive" : ""} hidden`}  >
           <div className='sidebar-wrap'>
             {sidebarData.map((item, index) => {
@@ -39,7 +39,7 @@ const Sidebar = ({ children }) => {
             })}
           </div>
         </nav> */}
-        <div className={`sm:flex sm:bg-gray-300 sm:flex-col sm:text-black sm:p-[10px] sm:fixed sm:top-0 sm:bottom-0 sm:left-0 sm:${showSideBar ? 'w-[250px]' : 'w-[50px]'} hidden`}>
+        <div className={`sm:flex sm:bg-gray-300 sm:flex-col sm:text-black sm:p-[10px] sm:fixed sm:top-0 sm:bottom-0 sm:left-0 ${showSideBar ? 'sm:w-[220px]' : 'sm:w-[50px]'} hidden`}>
           <div onClick={handleShowSideBar}>
             <FaBars size={30} />
           </div>
@@ -52,7 +52,7 @@ const Sidebar = ({ children }) => {
             })}
           </div>
         </div>
-        <div className={`w-full mb-[10px]  ${showSideBar ? 'sm:ml-[215px]' : 'sm:ml-[50px]'}`}>
+        <div className={`w-full mb-[10px] sm:mt-[80px] sm:p-[20px]  ${showSideBar ? 'sm:ml-[220px]' : 'sm:ml-[50px]'} `}>
           {children}
         </div>
       </div>

@@ -1,8 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import Container from 'react-bootstrap/Container';
-import Stack from 'react-bootstrap/Stack';
-import Table from 'react-bootstrap/Table';
-import Button from 'react-bootstrap/Button';
 import Popup from '../Popup/Popup';
 import { blobToBase64 } from '../../ultils/blobToBase64';
 import ButtonComponent from '../ButtonComponent/ButtonComponent';
@@ -167,23 +163,7 @@ const optionAdd = [
     },
 ]
 
-const AminBook = ({
-    // openAdd,
-    // listBook,
-    // handleStartEdittingPostBook,
-    // handleDeleteBook,
-    // isShowAddModel,
-    // optionsAddPopup,
-    // handleAdd,
-    // handleCancelAdd,
-    // isShowEditModel,
-    // optionsEditPopup,
-    // handleCancelEdit,
-    // handleEdit,
-    // handleSort,
-    // optionsFieldSort,
-    // listCategory,
-}) => {
+const AminBook = () => {
     const [isShowAddModel, setIsShowAddModel] = useState(false)
     const [listCategory, setListCategory] = useState([])
     const listBook = useSelector((state) => state.book.listBook)
@@ -215,7 +195,7 @@ const AminBook = ({
     }
     const limit = 3
     useEffect(() => {
-        dispatch(fetchGetListBookToolkit({ limit, pageCurent, searchString, }))
+        dispatch(fetchGetListBookToolkit({ limit, pageCurent, searchString}))
     }, [pageCurent])
 
     const handleCancelEdit = () => {
@@ -259,6 +239,7 @@ const AminBook = ({
                 inputType: 'select',
                 name: 'category_code',
                 value: (book.categoryData.code),
+                type:'text',
                 required: true,
                 error: '',
             },
@@ -395,7 +376,7 @@ const AminBook = ({
     }
     return (
         <>
-            <div className="mt-[60px] p-[10px]">
+            <div className="mt-[60px] sm:mt-0 p-[10px]">
                 <div >
                     <button
                         onClick={openAdd}
@@ -409,7 +390,6 @@ const AminBook = ({
                         <thead>
                             <tr >
                                 <th className="px-[5px] border-[1px]  border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600  
-                                
                                 ">
                                     <span>No</span>
                                 </th>

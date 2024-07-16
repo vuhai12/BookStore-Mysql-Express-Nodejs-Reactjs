@@ -10,17 +10,15 @@ const AminOrder = () => {
     useEffect(() => {
         dispatch(fetchGetOrdersToolkit())
     }, [])
+    console.log('listOrders',listOrders)
     return (
         <>
-            <div className='overflow-auto mt-[60px] p-[10px]'>
+            <div className='overflow-auto mt-[60px] sm:mt-0 p-[10px]'>
                 <table className='w-full'>
                     <thead>
                         <tr>
                             <th className="px-[5px] border-x-[1px]  border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600  ">
                                 <span>No</span>
-                            </th>
-                            <th className="px-[5px] border-x-[1px]  border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600  ">
-                                <span>UserId</span>
                             </th>
                             <th className="px-[5px] border-x-[1px]  border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600  ">Phương thức thanh toán</th>
                             <th onClick={() => handleSort('title')} className="px-[5px] border-x-[1px]  border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600  ">
@@ -45,21 +43,14 @@ const AminOrder = () => {
                         {listOrders.orderData && listOrders.orderData.length > 0 && listOrders.orderData.map((item, idx) => {
                             return (
                                 <tr key={item.id}>
-                                    <td className="px-[5px] border-x-[1px]  border-gray-200 bg-white text-[12px]">{item.id}</td>
-                                    <td className="px-[5px] border-x-[1px]  border-gray-200 bg-white text-[12px]"> {item.userId}</td>
+                                    <td className="px-[5px] border-x-[1px]  border-gray-200 bg-white text-[12px]">{idx+1}</td>
                                     <td className="px-[5px] border-x-[1px]  border-gray-200 bg-white text-[12px]">{item.paymentMethod}</td>
                                     <td className="px-[5px] border-x-[1px]  border-gray-200 bg-white text-[12px]">{item.quantity}</td>
                                     <td className="px-[5px] border-x-[1px]  border-gray-200 bg-white text-[12px]">{item.isPaid == false ? 'Chưa thanh toán' : 'Đã thanh toán'}</td>
                                     <td className="px-[5px] border-x-[1px]  border-gray-200 bg-white text-[12px]">{item.isDelivered == false ? 'Chưa giao hàng' : 'Đã giao hàng'}</td>
-                                    {/* <td>{item.total.toLocaleString()} VND</td> */}
+                                    <td>{item.toLocaleString()} VND</td>
                                     <td className="px-[5px] border-x-[1px]  border-gray-200 bg-white text-[12px]">{item.createdAt}</td>
                                     {/* <td>
-                                <ButtonComponent
-                                    onClick={() => handleStartEdittingPostBook(item)}
-                                    textButton='EDIT'
-                                    styleButton={{ padding: '10px', background: 'green' }}
-                                    styleTextButton={{ color: 'white' }}
-                                />
                             </td>
                             <td>
                                 <ButtonComponent

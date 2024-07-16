@@ -22,12 +22,11 @@ function HeaderComponent() {
     const listCart = useSelector((state) => state.cart.listCart)
     const { t, i18n } = useTranslation('translation')
     const currentLanguage = i18n.language
-    const isOpenSideBarMenu = useSelector((state) => state.user.isOpenSideBarMenu)
+    // const isOpenSideBarMenu = useSelector((state) => state.user.isOpenSideBarMenu)
 
-    const handleClick = () => {
-        dispatch(openSideBarMenu(!isOpenSideBarMenu))
-    }
-    const closeMobileMenu = () => setClick(false);
+    // const handleClick = () => {
+    //     dispatch(openSideBarMenu(!isOpenSideBarMenu))
+    // }
 
     const onMouseEnter = () => {
         setDropdown(true);
@@ -39,7 +38,6 @@ function HeaderComponent() {
     };
 
     const onMouseLeave = () => {
-       
         setDropdown(false);
         // if (window.innerWidth < 960) {
         //     setDropdown(false);
@@ -125,20 +123,12 @@ function HeaderComponent() {
                         <FaBars size={30} />
                     </div>
                     <div className='navbar-item sm:flex' >
-                        {/* <Link to='/' className='navbar-item-logo' onClick={closeMobileMenu}> */}
-                        {token && <div className='menu-icon' onClick={handleClick}>
-                            {/* <i className={click ? 'fas fa-times' : 'fas fa-bars'} /> */}
-                            <i className={false ? 'fas fa-times' : 'fas fa-bars'} />
-                        </div>}
-                        {/* </Link> */}
-                        <Link to='/' className='navbar-item-logo sm:ml-[30px]'
-                        // onClick={closeMobileMenu}
-                        >
+                        <Link to='/' className='navbar-item-logo sm:ml-[30px]'>
                             <span>Book</span>
                         </Link>
                         <div className='nav-group-search sm:ml-[80px] sm:w-[50%]' >
                             <FaSearch className='nav-icon-search' />
-                            <input onChange={handleSearch} className='sm:pl-[50px]'/>
+                            <input onChange={handleSearch} className='sm:pl-[50px]' />
                             <button onClick={handleSubmit}>Tìm kiếm</button>
                         </div>
                     </div>
@@ -185,9 +175,7 @@ function HeaderComponent() {
                             {/* <div className='w-[100px] grow'>
                                 <Toggle toggle={toggle} handleToggleChange={handleToggleChange} />
                             </div> */}
-
                         </div>
-                      
                         <div className='flex cursor-pointer relative grow mr-[30px]' onClick={handleCart}>
                             <FaShoppingCart className='text-[25px] text-sky-900' />
                             {listCart?.length > 0 && <div className='bg-red-500 w-[20px] h-[20px] rounded-[50%] text-white flex items-center justify-center text-[12px]' ><span>{listCart?.length}</span></div>}
@@ -204,7 +192,6 @@ function HeaderComponent() {
                                 <button onClick={handleLogout} className='btn-auth sm:px-[10px]'>Logout</button>
                             </div>
                         }
-                        
                     </div>
                 </div>
                 <div className='overlay'>
@@ -234,15 +221,9 @@ function HeaderComponent() {
                                 <button onClick={handleLogout} className='btn-auth'>Logout</button>
                             </div>
                         }
-
-
-
                     </div>
-
                     <div className={`nav-overlay ${isOpenOverlay ? 'block' : 'hidden'}`} onClick={handleCloseOverlay} />
-
                 </div>
-
             </nav>
         </>
     );

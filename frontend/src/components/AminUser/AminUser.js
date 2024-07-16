@@ -346,7 +346,7 @@ const AminUser = () => {
 
     return (
         <>
-            <div className="mt-[60px] p-[10px]">
+            <div className="mt-[60px] sm:mt-0 p-[10px] sm:p-0">
                 <div>
                     <button className='rounded-[5px]  border-[1px] border-solid border-gray-500 px-[20px] py-[5px] mr-[10px] hover:bg-slate-600 hover:text-gray-50' onClick={openAdd}>Add</button>
                     <button className='rounded-[5px] border-[1px] border-solid border-gray-500 px-[20px] py-[5px] hover:bg-red-600 hover:text-gray-50' onClick={handleExportData}>Export</button>

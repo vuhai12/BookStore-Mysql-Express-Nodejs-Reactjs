@@ -7,7 +7,7 @@ import Payment from '../pages/payment/Payment';
 import OrderSuccess from '../pages/orderSuccess/OrderSuccess';
 import MyOrder from '../pages/myOrder/MyOrder';
 import AminPage from '../pages/adminPage/AminPage';
-import NotFoundPage from '../components/NotFoundPage/NotFoundPage'; 
+import NotFoundPage from '../components/NotFoundPage/NotFoundPage';
 import UserInfo from '../components/UserInfo/UserInfo';
 import UserOrder from '../components/UserOrder/UserOrder';
 import AminOrder from '../components/AminOrder/AminOrder';
@@ -30,13 +30,13 @@ export const routeAdmin = [
         page: AminUser,
         isShowHeader: true
     },
-    
-   
+
+
 ]
 
 export const routeAdminUser = [
-  
-   
+
+
     {
         path: '/book/cart',
         page: CartDetail,
@@ -46,7 +46,7 @@ export const routeAdminUser = [
         path: '/checkout/payment',
         page: Payment,
         isShowHeader: true
-    }, 
+    },
     {
         path: '/user/info',
         page: UserInfo,
@@ -55,20 +55,11 @@ export const routeAdminUser = [
 ]
 
 export const routeUser = [
-    
-    
-    // {
-    //     path: '/user/info',
-    //     page: UserInfo,
-    //     isShowHeader: true
-    // },
     {
         path: '/user/order',
         page: UserOrder,
         isShowHeader: true
     },
-    
-   
 ]
 
 export const routePublic = [
@@ -77,13 +68,13 @@ export const routePublic = [
         page: Home,
         isShowHeader: true
     },
-   
+
     {
         path: '/',
         page: Home,
         isShowHeader: true
     },
-    
+
     {
         path: '/book/:id',
         page: BookDetail,
@@ -97,7 +88,7 @@ export const routePublic = [
 ]
 
 export const routeAuth = [
-    
+
     {
         path: '/login',
         page: Login,
@@ -108,8 +99,8 @@ export const routeAuth = [
         page: Register,
         isShowHeader: true
     },
-    
-    
-    
+
+
+
 ]
 

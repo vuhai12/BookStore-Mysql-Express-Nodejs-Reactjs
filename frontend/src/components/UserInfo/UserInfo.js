@@ -127,8 +127,8 @@ const UserInfo = () => {
 
   return (
     <>
-      <h5 className='mt-[80px] ml-[50px]'>Cập nhật Thông tin cá nhân</h5>
-      <div className='flex flex-col sm:flex-row mt-[60px] items-center sm:w-[60%]'>
+      <h5 className='mt-[80px] ml-[50px] text-center sm:mt-0 sm:text-left'>Cập nhật Thông tin cá nhân</h5>
+      <div className='flex flex-col sm:flex-row mt-[60px] sm:mt-0 items-center sm:w-[60%]'>
         <div className='sm:p-[10px] sm:basis-[30%] sm:text-center'>
           {items.map((item) => {
             if (item.type == 'file') {

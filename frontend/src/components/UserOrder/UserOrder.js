@@ -13,30 +13,29 @@ const UserOrder = () => {
   }, [])
   return (
     <>
-      <Container>
-        <Table striped bordered hover className='mt-3'>
+     
+      <table className='w-full'>
           <thead>
             <tr style={{ width: '100%' }}>
-              <th style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <th className="px-[5px] border-[1px]  border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600">
                 <span>No</span>
               </th>
-              <th >
-                <span>UserId</span>
-              </th>
-              <th>Phương thức thanh toán</th>
-              <th onClick={() => handleSort('title')} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '10%' }}>
+            
+              <th className="px-[5px] border-[1px]  border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600">
+                Phương thức thanh toán</th>
+              <th onClick={() => handleSort('title')} className="px-[5px] border-[1px]  border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600">
                 <span>Số lượng</span>
               </th>
-              <th onClick={() => handleSort('available')}>
+              <th onClick={() => handleSort('available')} className="px-[5px] border-[1px]  border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600">
                 <span>Thanh toán</span>
               </th>
-              <th onClick={() => handleSort('category_code')}>
+              <th onClick={() => handleSort('category_code')} className="px-[5px] border-[1px]  border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600">
                 <span>Giao hàng</span>
               </th>
-              <th onClick={() => handleSort('price')}>
+              <th onClick={() => handleSort('price')} className="px-[5px] border-[1px]  border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600">
                 <span>Tổng giá</span>
               </th>
-              <th onClick={() => handleSort('description')}>
+              <th onClick={() => handleSort('description')} className="px-[5px] border-[1px]  border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600">
                 <span>Ngày mua</span>
               </th>
               {/* <th colSpan={3} className='text-center'>Action</th> */}
@@ -46,14 +45,13 @@ const UserOrder = () => {
             {orderById && orderById.length > 0 && orderById.map((item, idx) => {
               return (
                 <tr key={item.id}>
-                  <td>{item.id}</td>
-                  <td>{item.userId}</td>
-                  <td>{item.paymentMethod}</td>
-                  <td>{item.quantity}</td>
-                  <td>{item.isPaid == false ? 'Chưa thanh toán' : 'Đã thanh toán'}</td>
-                  <td>{item.isDelivered == false ? 'Chưa giao hàng' : 'Đã giao hàng'}</td>
-                  {/* <td>{item.total.toLocaleString()} VND</td> */}
-                  <td>{item.createdAt}</td>
+                  <td className='px-[5px] border-[1px]  border-gray-200 bg-white text-[12px]'>{idx+1}</td>
+                  <td className='px-[5px] border-[1px]  border-gray-200 bg-white text-[12px]'>{item.paymentMethod}</td>
+                  <td className='px-[5px] border-[1px]  border-gray-200 bg-white text-[12px]'>{+item.qua}</td>
+                  <td className='px-[5px] border-[1px]  border-gray-200 bg-white text-[12px]'>{item.isPaid == false ? 'Chưa thanh toán' : 'Đã thanh toán'}</td>
+                  <td className='px-[5px] border-[1px]  border-gray-200 bg-white text-[12px]'>{item.isDelivered == false ? 'Chưa giao hàng' : 'Đã giao hàng'}</td>
+                  <td>{item.totalPrices.toLocaleString()} VND</td>
+                  <td className='px-[5px] border-[1px]  border-gray-200 bg-white text-[12px]'>{item.createdAt}</td>
                   {/* <td>
                                 <ButtonComponent
                                     onClick={() => handleStartEdittingPostBook(item)}
@@ -74,7 +72,7 @@ const UserOrder = () => {
               )
             })}
           </tbody>
-        </Table>
+        </table>
         {/* {isShowAddModel &&
             <Popup
                 isShow={isShowAddModel}
@@ -96,7 +94,7 @@ const UserOrder = () => {
                 subActionText={'Close'}
             />
         } */}
-      </Container>
+
     </>
   )
 }
