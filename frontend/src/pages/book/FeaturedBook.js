@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { fetchGetListCategoryToolkit } from '../../redux/slides/userSlice';
 import { fetchGetListBookToolkit } from '../../redux/slides/bookSlice';
 import BookCard from '../../components/BookCard/BookCard';
+import SliderComponent from '../../components/SliderComponent/SliderComponent';
 
 
 const FeaturedBook = () => {
@@ -25,9 +26,15 @@ const FeaturedBook = () => {
   return (
     <>
       {/* <div  className='bg-white rounded-[5px] p-[20px] fixed w-[80%] right-0'> */}
-    
-      <div  className=' rounded-[5px] p-[10px]  w-[100%] mt-[60px] bg-white sm:ml-[240px]'>
-        <h5 className='p-[5px]'>Sách</h5>
+
+      <div className=' rounded-[5px] p-[10px]  w-[100%] mt-[70px] bg-white sm:ml-[240px] relative'>
+        <div className='w-full  relative bg-red-600'>
+        <SliderComponent />
+        </div>
+       
+      
+        {/* <SliderComponent /> */}
+        <h5 className='p-[5px] sm:mt-[350px]'>Sách</h5>
         <div className='flex flex-wrap'>
           {
             listBook && listBook?.length > 0 && listBook?.map((item, index) => {

@@ -52,7 +52,7 @@ const Sidebar = ({ children }) => {
             })}
           </div>
         </div>
-        <div className={`w-full mb-[10px] sm:mt-[80px] sm:p-[20px]  ${showSideBar ? 'sm:ml-[220px]' : 'sm:ml-[50px]'} `}>
+        <div className={`w-full mb-[10px] sm:mt-[50px] sm:p-[20px]  ${showSideBar ? 'sm:ml-[220px]' : 'sm:ml-[50px]'} `}>
           {children}
         </div>
       </div>

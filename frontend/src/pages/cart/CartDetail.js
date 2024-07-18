@@ -121,7 +121,7 @@ const CartDetail = () => {
   }
   return (
     <>
-      <div className='mt-[60px] p-[20px]'>
+      <div className='mt-[60px] sm:mt-0 p-[20px] sm:p-0'>
         <h3>Giỏ hàng</h3>
         {listCart?.length > 0 ?
           <div className='flex flex-col my-[30px]' >
