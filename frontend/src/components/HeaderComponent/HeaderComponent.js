@@ -27,6 +27,7 @@ function HeaderComponent() {
     // const handleClick = () => {
     //     dispatch(openSideBarMenu(!isOpenSideBarMenu))
     // }
+    console.log('21212 header')
 
     const onMouseEnter = () => {
         setDropdown(true);

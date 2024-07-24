@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
-import SubMenu from './SubMenu';
-import './Sidebar.css'
+import SidebarItemCollapse from './SidebarItemCollapse';
 import { useSelector } from 'react-redux';
 import { jwtDecode } from "jwt-decode";
 import { SidebarDataUser } from './SidebarDataUser';
 import { SidebarDataAdmin } from './SidebarDataAdmin';
 import { FaBars } from 'react-icons/fa6';
+import SidebarItem from './SidebarItem';
 
 const Sidebar = ({ children }) => {
   const isOpenSideBarMenu = useSelector((state) => state.user.isOpenSideBarMenu)
@@ -20,7 +20,6 @@ const Sidebar = ({ children }) => {
       return role_code
     }
   }
-
   const sidebarData = roleCode() == 'R2' ? SidebarDataUser : SidebarDataAdmin
 
   const [showSideBar, setShowSideBar] = useState(true)
@@ -28,6 +27,7 @@ const Sidebar = ({ children }) => {
   const handleShowSideBar = () => {
     setShowSideBar(!showSideBar)
   }
+
 
   return (
     <>
@@ -39,21 +39,25 @@ const Sidebar = ({ children }) => {
             })}
           </div>
         </nav> */}
-        <div className={`sm:flex sm:bg-gray-300 sm:flex-col sm:text-black sm:p-[10px] sm:fixed sm:top-0 sm:bottom-0 sm:left-0 ${showSideBar ? 'sm:w-[220px]' : 'sm:w-[50px]'} hidden`}>
-          <div onClick={handleShowSideBar}>
+        <div className={`sm:flex sm:z-50 sm:bg-gray-300 sm:flex-col sm:text-black  sm:fixed sm:top-0 sm:bottom-0 sm:left-0 ${showSideBar ? 'sm:w-[220px]' : 'sm:w-[50px]'} hidden`}>
+          <div onClick={handleShowSideBar} className='sm:px-[10px] sm:py-[10px]'>
             <FaBars size={30} />
           </div>
           <div>
-            {sidebarData.map((item, index) => {
-              return (
-                <SubMenu item={item} key={index} showSideBar={showSideBar}/>
-              )
-              // return <SubMenu item={item} key={index} />;
-            })}
+            {sidebarData.map((item, index) => (
+              item.subNav ?
+                <SidebarItemCollapse
+                  item={item}
+                  key={index}
+                  showSideBar={showSideBar}
+                /> :
+                <SidebarItem item={item} showSideBar={showSideBar} />
+            ))}
           </div>
         </div>
         <div className={`w-full mb-[10px] sm:mt-[50px] sm:p-[20px]  ${showSideBar ? 'sm:ml-[220px]' : 'sm:ml-[50px]'} `}>
           {children}
+          {/* <Outlet /> */}
         </div>
       </div>
     </>

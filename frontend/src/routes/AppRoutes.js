@@ -3,7 +3,6 @@ import PublicRoutes from './PublicRoutes'
 import ProtectedRouteAdmin from './AdminRoutes'
 import ProtectedRouteUser from './UserRoutes'
 import ProtectedRouteAuth from './AuthRoutes'
-
 import NotFoundPage from '../components/NotFoundPage/NotFoundPage'
 import { routePublic, routeAdmin, routeUser, routeAdminUser, routeAuth } from './Routes'
 import { Routes, Route, Link, Redirect, Switch, Navigate, BrowserRouter as Router } from 'react-router-dom';
@@ -19,16 +18,16 @@ import { jwtDecode } from "jwt-decode";
 
 
 const AppRoutes = ({ pathCurrent }) => {
-
     return (
         <>
             <Routes>
+
                 {routePublic.map((route, idx) => {
+
                     const Page = route.page
                     const Layout = route.isShowHeader ? DefaultComponent : Fragment
                     return (
                         <Route key={route.path} path={route.path} element={
-                            // <AuthRoutes pathCurrent={pathCurrent} path={route.path}>
                             <PublicRoutes pathCurrent={pathCurrent} path={route.path}>
                                 <Layout>
                                     <Page />
@@ -37,6 +36,7 @@ const AppRoutes = ({ pathCurrent }) => {
                         } />
                     )
                 })}
+                {/* </Route> */}
 
                 {routeAuth.map((route, idx) => {
                     const Page = route.page
@@ -57,7 +57,6 @@ const AppRoutes = ({ pathCurrent }) => {
                     const Page = route.page
                     const Layout = route.isShowHeader ? DefaultComponent : Fragment
                     return (
-
                         <Route key={route.path} path={route.path} element={
                             // <AuthRoutes pathCurrent={pathCurrent} path={route.path}>
                             <ProtectedRouteUser pathCurrent={pathCurrent} path={route.path}>
@@ -74,9 +73,16 @@ const AppRoutes = ({ pathCurrent }) => {
                 {routeAdmin.map((route, idx) => {
                     const Page = route.page
                     const Layout = route.isShowHeader ? DefaultComponent : Fragment
+
                     return (
+                        // <Route element={<ProtectedRouteAdmin />}>
+                        //     <Route element={<Layout />}>
+                        //         <Route element={<Sidebar />}>
+                        //             <Route path={route.path} element={<Page />} />
+                        //         </Route>
+                        //     </Route>
+                        // </Route>
                         <Route key={route.path} path={route.path} element={
-                            // <AuthRoutes pathCurrent={pathCurrent} path={route.path}>
                             <ProtectedRouteAdmin pathCurrent={pathCurrent} path={route.path}>
                                 <Layout>
                                     <Sidebar >
@@ -84,27 +90,38 @@ const AppRoutes = ({ pathCurrent }) => {
                                     </Sidebar>
                                 </Layout>
                             </ProtectedRouteAdmin>
-                        } />
+                        }
+                        />
                     )
                 })}
 
                 {routeAdminUser.map((route, idx) => {
                     const Page = route.page
                     const Layout = route.isShowHeader ? DefaultComponent : Fragment
+
                     return (
-                        <Route key={route.path} path={route.path} element={
-                            // <AuthRoutes pathCurrent={pathCurrent} path={route.path}>
-                            <ProtectedRouteAdminUser pathCurrent={pathCurrent} path={route.path}>
-                                <Layout>
-                                    <Sidebar >
-                                        <Page />
-                                    </Sidebar>
-                                </Layout>
-                            </ProtectedRouteAdminUser>
-                        } />
+                        <>
+                            <Route element={<ProtectedRouteAdminUser />}>
+                                <Route element={<Layout />}>
+                                    <Route element={<Sidebar />}>
+                                        <Route path={route.path} element={<Page />} />
+                                    </Route>
+                                </Route>
+                            </Route>
+                            {/* <Route path={route.path} element={
+                                // <AuthRoutes pathCurrent={pathCurrent} path={route.path}>
+                                <ProtectedRouteAdminUser>
+                                    <Layout>
+                                        <Sidebar >
+                                            <Page />
+                                        </Sidebar>
+                                    </Layout>
+                                </ProtectedRouteAdminUser>
+                            } /> */}
+
+                        </>
                     )
                 })}
-
                 <Route path='*' element={<NotFoundPage />} />
             </Routes>
         </>

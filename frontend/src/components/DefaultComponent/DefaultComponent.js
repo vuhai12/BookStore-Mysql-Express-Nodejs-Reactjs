@@ -3,7 +3,7 @@ import HeaderComponent from '../HeaderComponent/HeaderComponent'
 import { AiFillHome } from "react-icons/ai";
 import { FaThList } from "react-icons/fa";
 import { IoClose, IoPerson } from "react-icons/io5";
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { jwtDecode } from "jwt-decode";
 import { SidebarDataUser } from '../SideBarInfoUser/SidebarDataUser';
@@ -24,7 +24,6 @@ const DefaultComponent = ({ children }) => {
       return role_code
     }
   }
-
   const sidebarData = roleCode() == 'R2' ? SidebarDataUser : SidebarDataAdmin
   const handleHome = () => {
     navigate('/')
@@ -54,9 +53,11 @@ const DefaultComponent = ({ children }) => {
 
   return (
     <div className='h-[100%] relative flex flex-col'>
+      {console.log('return   đcdbđ')}
       <HeaderComponent />
       {/* <div className=' h-[100%] relative'> */}
       {children}
+      {/* <Outlet/> */}
       <footer className='bg-gray-200  p-[15px] flex items-center justify-center  w-[100%] mt-auto z-30'>
         <p>coppy right@ 20024</p>
       </footer>
@@ -65,7 +66,7 @@ const DefaultComponent = ({ children }) => {
         <div className='w-full text-right px-[30px] py-[20px]' onClick={handleCloseDetailPerson}>
           <IoClose size={30} />
         </div>
-        {sidebarData.map((item, id) => {
+        {/* {sidebarData.map((item, id) => {
           return (
             <>
               <NavLink
@@ -78,7 +79,7 @@ const DefaultComponent = ({ children }) => {
               </NavLink>
             </>
           )
-        })}
+        })} */}
       </div>
       <div className={`${showListBook ? 'block' : 'hidden'} list-book fixed top-0 bottom-0 right-0 left-0 bg-gray-200 flex flex-col`}>
         <div className='w-full text-right px-[30px] py-[20px]' onClick={handleCloseListBook}>

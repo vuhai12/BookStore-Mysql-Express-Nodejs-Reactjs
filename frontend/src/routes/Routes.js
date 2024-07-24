@@ -30,6 +30,11 @@ export const routeAdmin = [
         page: AminUser,
         isShowHeader: true
     },
+    {
+        path: '/admin/info',
+        page: UserInfo,
+        isShowHeader: true
+    },
 
 
 ]

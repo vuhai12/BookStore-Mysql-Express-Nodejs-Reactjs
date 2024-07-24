@@ -9,8 +9,6 @@
     * {
         @apply p-0 m-0 box-border
     }
-    
-
     html {
         @apply w-[100%] h-[100%]
     }
@@ -128,7 +126,6 @@
         /* top-[50%]  left-[50%]  
          translate-x-[-50%] translate-y-[-50%]   */
 /* absolute */
-
     }
 
     .form-auth input{
@@ -175,4 +172,5 @@
     .nav-item {
         @apply text-slate-900 grow h-[60px] flex items-center sm:mr-[20px]
     }
+   
 }

@@ -164,6 +164,7 @@ const optionAdd = [
 ]
 
 const AminBook = () => {
+    console.log('system admin book')
     const [isShowAddModel, setIsShowAddModel] = useState(false)
     const [listCategory, setListCategory] = useState([])
     const listBook = useSelector((state) => state.book.listBook)

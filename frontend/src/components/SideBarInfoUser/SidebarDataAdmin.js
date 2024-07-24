@@ -7,54 +7,65 @@ import { RxAvatar } from "react-icons/rx";
 
 export const SidebarDataAdmin = [
   {
+    id: 1,
     title: 'Quản lý người dùng',
-    path: '',
+    path: '/system/admin/user',
+    state: 'user',
     icon: <AiIcons.AiFillHome />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
-    subNav:[
+    subNav: [
       {
-        title:'Người dùng',
-        path:'/system/admin/user',
-        icon:<AiIcons.AiFillHome />,
+        id: 1,
+        title: 'Người dùng',
+        path: '/system/admin/user',
+        // icon:<AiIcons.AiFillHome />,
       }
     ]
   },
   {
+    id: 2,
     title: 'Thông tin tài khoản',
-    path: '',
-    icon: <RxAvatar/>,
+    path: '/admin/info',
+    state: 'info',
+    icon: <RxAvatar />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
-    subNav:[
+    subNav: [
       {
-        title:'Tài khoản',
-        path:'/user/info',
-        icon:<RxAvatar/>,
+        id: 1,
+        title: 'Tài khoản',
+        path: '/admin/info',
+        // icon:<RxAvatar/>,
       }
     ]
   },
   {
+    id: 3,
     title: 'Quản lý sách',
-    path: '',
+    path: '/system/admin/book',
+    state: 'book',
     icon: <IoIcons.IoIosPaper />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
-    subNav:[
+    subNav: [
       {
-        title:'Sách',
-        path:'/system/admin/book',
-        icon:<IoIcons.IoIosPaper />,
+        id: 1,
+        title: 'Sách',
+        path: '/system/admin/book',
+        // icon:<IoIcons.IoIosPaper />,
       }
     ]
   },
   {
+    id: 4,
     title: 'Quản lý đơn hàng',
     path: '/system/admin/order',
+    state: 'order',
     icon: <FaIcons.FaCartPlus />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
-    
+
   },
 
 ];

@@ -2,7 +2,8 @@ import { BrowserRouter as Router, Outlet, Navigate, useNavigate } from 'react-ro
 import { createBrowserHistory } from "history";
 import { jwtDecode } from "jwt-decode";
 
-const ProtectedRouteAdminUser = (props) => {
+const ProtectedRouteAdminUser = ({children}) => {
+    console.log('ProtectedRouteAdminUser')
 
     const token = localStorage?.getItem("access_token");
     
@@ -19,7 +20,8 @@ const ProtectedRouteAdminUser = (props) => {
     if (roleCode() === "R1"||roleCode()==='R2') {
         return (
             <>
-                {props.children}
+                {/* {children} */}
+                <Outlet/>
             </>
         )
     }else{

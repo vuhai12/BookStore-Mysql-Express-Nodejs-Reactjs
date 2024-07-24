@@ -56,6 +56,7 @@ const UserInfo = () => {
     },
   ]
   const [items, setItems] = useState(userDataUpdate)
+  console.log('uerrrrrrrrrrrrr')
 
   useEffect(() => {
     dispatch(fetchGetUserByIdToolkit()).then((result) => {

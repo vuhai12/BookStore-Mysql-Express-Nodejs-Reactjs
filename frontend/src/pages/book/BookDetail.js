@@ -50,7 +50,6 @@ const BookDetail = () => {
                     })).then(() => {
                         dispatch(fetchGetCartToolkit())
                     })
-
             } else {
                 navigate('/login')
             }
@@ -62,7 +61,6 @@ const BookDetail = () => {
     return (
         <>
             <div>
-
                 <div className='p-[20px] w-full mt-[60px] flex flex-col sm:flex-row sm:relative'>
                     <div style={{ width: '100%' }}>
                         <img
@@ -72,28 +70,39 @@ const BookDetail = () => {
                         />
                     </div>
                     <div style={{ width: '100%', padding: '20px' }}>
-                        <h3>{location.state.props.title}</h3>
+                        <h3 className='font-bold sm:text-[30px]'>{location.state.props.title}</h3>
                         <h3 style={{ color: 'red', fontSize: '20px' }}>{location.state.props?.price.toLocaleString()} VNĐ</h3>
-                        <p className='mb-[10px]'>Số lượng</p>
+                        <p className=''>Số lượng</p>
                         <SelectQuantity
                             quantity={quantity}
                             handleQuantity={handleQuantity}
                             handleChangeQuantity={handleChangeQuantity}
                         />
+                        <button
+                            onClick={handleAddCart}
+                            className='sm:w-full sm:p-[10px] sm:bg-blue-900 sm:text-white sm:rounded-[5px] sm:my-[10px]'
+                        >
+                            Thêm giỏ hàng
+                        </button>
+                        <button
+                            className='sm:w-full sm:p-[10px] sm:bg-red-600 sm:text-white sm:rounded-[5px] sm:my-[10px]'
+                        >
+                            Mua ngay
+                        </button>
                     </div>
-                    <div className='flex fixed bottom-0 z-50 bg-gray-300 w-full h-[60px] sm:w-[30%] sm:absolute sm:bottom-[-60px] ' >
-                    <button
-                        onClick={handleAddCart}
-                        className='basis-1 grow '
-                    >
-                        Thêm giỏ hàng
-                    </button>
-                    <button
-                        className='basis-1 grow bg-red-500 text-white '
-                    >
-                        Mua ngay
-                    </button>
-                </div>
+                    {/* <div className='flex fixed bottom-0 z-50 bg-gray-300 w-full h-[60px] sm:w-[30%] sm:absolute sm:bottom-[-60px] ' >
+                        <button
+                            onClick={handleAddCart}
+                            className='basis-1 grow '
+                        >
+                            Thêm giỏ hàng
+                        </button>
+                        <button
+                            className='basis-1 grow bg-red-500 text-white '
+                        >
+                            Mua ngay
+                        </button>
+                    </div> */}
                     {/* <div style={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }} >
                             <Button
                                 onClick={handleAddCart}
@@ -114,13 +123,8 @@ const BookDetail = () => {
                             handleChangeQuantity={handleChangeQuantity}
                         />
                     </div> */}
-
-                
-
             </div>
         </>
-
-
     )
 }
 

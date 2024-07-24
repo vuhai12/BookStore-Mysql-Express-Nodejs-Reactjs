@@ -344,6 +344,8 @@ const AminUser = () => {
         dispatch(fetchGetListUserToolkit({ limit, pageCurent, searchString }))
     }
 
+    console.log('adminusser')
+
     return (
         <>
             <div className="mt-[60px] sm:mt-0 p-[10px] sm:p-0">

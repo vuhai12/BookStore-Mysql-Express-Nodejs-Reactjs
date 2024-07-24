@@ -3,7 +3,6 @@ import { createBrowserHistory } from "history";
 import { jwtDecode } from "jwt-decode";
 
 const ProtectedRouteAdmin = (props) => {
-
     const token = localStorage?.getItem("access_token");
     const getRoleCode = ()=>{
         if(token){
@@ -22,6 +21,7 @@ const ProtectedRouteAdmin = (props) => {
         return (
             <>
                 {props.children}
+                {/* <Outlet/> */}
             </>
         )
     }else{
