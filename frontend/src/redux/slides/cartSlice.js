@@ -1,4 +1,4 @@
-import { createSlice, current, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   apiAddCart,
   apiGetCart,
@@ -7,119 +7,119 @@ import {
   apiCheckedAllBookCart,
   apiDeleteAllBookCart,
   apiGetBookInCartChecked,
-  apiQuantityBookInCart
-} from '../../services/CartService'
+  apiQuantityBookInCart,
+} from "../../services/CartService";
 
 export const fetchGetCartToolkit = createAsyncThunk(
-  'users/fetchGetCartToolkit',
+  "users/fetchGetCartToolkit",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await apiGetCart()
-      return { res: response.cartData }
+      const response = await apiGetCart();
+      return { res: response.cartData };
     } catch (error) {
-      return rejectWithValue(error.response.data)
+      return rejectWithValue(error.response.data);
     }
   }
-)
+);
 
 export const fetchGetBookInCartChecked = createAsyncThunk(
-  'users/fetchGetBookInCartChecked',
+  "users/fetchGetBookInCartChecked",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await apiGetBookInCartChecked()
-      console.log('response',response)
-      return { res: response.cartData }
+      const response = await apiGetBookInCartChecked();
+      return { res: response.cartData };
     } catch (error) {
-      return rejectWithValue(error.response.data)
+      return rejectWithValue(error.response.data);
     }
   }
-)
+);
 
 export const fetchAddCartToolkit = createAsyncThunk(
-  'users/fetchAddCartToolkit',
-  async (data,  { rejectWithValue }) => {
+  "users/fetchAddCartToolkit",
+  async (data, { rejectWithValue }) => {
     try {
-      const response = await apiAddCart(data)
-      return response
+      const response = await apiAddCart(data);
+      console.log("response cart", response);
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response.data)
+      return rejectWithValue(error.response.data);
     }
   }
-)
+);
 
 export const fetchCheckedBookCartToolkit = createAsyncThunk(
-  'users/fetchCheckedBookCartToolkit',
-  async (data,  { rejectWithValue }) => {
+  "users/fetchCheckedBookCartToolkit",
+  async (data, { rejectWithValue }) => {
     try {
-      const response = await apiCheckedBookCart(data)
-      return response
+      const response = await apiCheckedBookCart(data);
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response.data)
+      return rejectWithValue(error.response.data);
     }
   }
-)
+);
 
 export const fetchCheckedAllBookCartToolkit = createAsyncThunk(
-  'users/fetchCheckedAllBookCartToolkit',
-  async (data,  { rejectWithValue }) => {
+  "users/fetchCheckedAllBookCartToolkit",
+  async (data, { rejectWithValue }) => {
     try {
-      const response = await apiCheckedAllBookCart(data)
-      return response
+      const response = await apiCheckedAllBookCart(data);
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response.data)
+      return rejectWithValue(error.response.data);
     }
   }
-)
+);
 
 export const fetchDeleteAllBookCartToolkit = createAsyncThunk(
-  'users/fetchDeleteAllBookCartToolkit',
-  async (data,  { rejectWithValue }) => {
+  "users/fetchDeleteAllBookCartToolkit",
+  async (data, { rejectWithValue }) => {
     try {
-      const response = await apiDeleteAllBookCart()
-      return response
+      const response = await apiDeleteAllBookCart();
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response.data)
+      return rejectWithValue(error.response.data);
     }
   }
-)
+);
 
 export const fetchDeleteBookInCartToolkit = createAsyncThunk(
-  'users/fetchDeleteBookInCartToolkit',
-  async (data,  { rejectWithValue }) => {
+  "users/fetchDeleteBookInCartToolkit",
+  async (data, { rejectWithValue }) => {
     try {
-      const response = await apiDeleteBookInCart(data)
-      return response
+      const response = await apiDeleteBookInCart(data);
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response.data)
+      return rejectWithValue(error.response.data);
     }
   }
-)
+);
 
 export const fetchDecrementQuantityBookInCart = createAsyncThunk(
-  'users/fetchDecrementQuantityBookInCart',
-  async (data,  { rejectWithValue }) => {
+  "users/fetchDecrementQuantityBookInCart",
+  async (data, { rejectWithValue }) => {
     try {
-      console.log('data',data)
-      const response = await apiQuantityBookInCart(data)
-      return response
+      console.log("data", data);
+      const response = await apiQuantityBookInCart(data);
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response.data)
+      return rejectWithValue(error.response.data);
     }
   }
-)
+);
 
 export const fetchIncrementQuantityBookInCart = createAsyncThunk(
-  'users/fetchIncrementQuantityBookInCart',
-  async (data,  { rejectWithValue }) => {
+  "users/fetchIncrementQuantityBookInCart",
+  async (data, { rejectWithValue }) => {
     try {
-      console.log('dataIncre',data)
-      const response = await apiQuantityBookInCart(data)
-      return response
+      console.log("dataIncre", data);
+      const response = await apiQuantityBookInCart(data);
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response.data)
+      return rejectWithValue(error.response.data);
     }
   }
-)
+);
 export const cartSlice = createSlice({
   name: "cart",
   initialState: {
@@ -129,57 +129,62 @@ export const cartSlice = createSlice({
     bookIds: [],
     isCheckedAll: false,
     cartsChecked: [],
-    listBookInCartChecked:[],
-    listCart:[]
+    listBookInCartChecked: [],
+    listCart: [],
   },
   reducers: {
     addToCart: (state, action) => {
-     
-      const itemIndex = state.carts.findIndex((item) => item?.bookId == action.payload.bookId)
-      
+      const itemIndex = state.carts.findIndex(
+        (item) => item?.bookId == action.payload.bookId
+      );
+
       if (itemIndex !== -1) {
         state.carts[itemIndex] = {
           bookId: action.payload.bookId,
           quantity: action.payload.quantity,
           price: action.payload.price,
           isChecked: false,
-          image: (action.payload.image)
-        }
+          image: action.payload.image,
+        };
       } else {
         const temBook = {
           bookId: action.payload.bookId,
           quantity: action.payload.quantity,
           price: action.payload.price,
           isChecked: false,
-          image: (action.payload.image)
-        }
-        state.carts.push(temBook)
+          image: action.payload.image,
+        };
+        state.carts.push(temBook);
       }
     },
 
     decrementItem: (state, action) => {
-      const itemIndex = state.carts.findIndex((item) => item.bookId == action.payload.bookId)
-      state.carts[itemIndex].quantity = action.payload.quantity - 1
+      const itemIndex = state.carts.findIndex(
+        (item) => item.bookId == action.payload.bookId
+      );
+      state.carts[itemIndex].quantity = action.payload.quantity - 1;
     },
 
     incrementItem: (state, action) => {
-      const itemIndex = state.carts.findIndex((item) => item.bookId == action.payload.bookId)
-      state.carts[itemIndex].quantity = action.payload.quantity + 1
+      const itemIndex = state.carts.findIndex(
+        (item) => item.bookId == action.payload.bookId
+      );
+      state.carts[itemIndex].quantity = action.payload.quantity + 1;
     },
 
     getTotalPrice: (state) => {
       const totalPrice = state.carts.reduce((total, book) => {
         if (book.isChecked == true) {
-          return total + (+book.price * +book.quantity);
+          return total + +book.price * +book.quantity;
         } else {
-          return total
+          return total;
         }
       }, 0);
       const cartToTalBook = state.carts.reduce((total, book) => {
         if (book.isChecked == true) {
-          return total + (+book.quantity);
+          return total + +book.quantity;
         } else {
-          return total
+          return total;
         }
       }, 0);
       state.totalPrice = totalPrice;
@@ -188,85 +193,36 @@ export const cartSlice = createSlice({
   },
 
   extraReducers: (builder) => {
-
-    builder.addCase(fetchDecrementQuantityBookInCart.pending, (state, action) => {
-    })
-
     //add create new book
-    builder.addCase(fetchDecrementQuantityBookInCart.fulfilled, (state, action) => {
-    })
-
-    builder.addCase(fetchIncrementQuantityBookInCart.pending, (state, action) => {
-    })
-
-    //add create new book
-    builder.addCase(fetchIncrementQuantityBookInCart.fulfilled, (state, action) => {
-    })
-
-    builder.addCase(fetchDeleteAllBookCartToolkit.pending, (state, action) => {
-      // Add user to the state array
-     
-    })
-
-    //add create new book
-    builder.addCase(fetchDeleteAllBookCartToolkit.fulfilled, (state, action) => {
-      // Add user to the state array
-     
-    })
-
-
-    builder.addCase(fetchDeleteBookInCartToolkit.pending, (state, action) => {
-      // Add user to the state array
-      
-    })
-
-    //add create new book
-    builder.addCase(fetchDeleteBookInCartToolkit.fulfilled, (state, action) => {
-      // Add user to the state array
-      
-    })
 
     builder.addCase(fetchAddCartToolkit.pending, (state, action) => {
       // Add user to the state array
-      return ({
+      return {
         ...state,
         statusLoading: true,
-      })
-    })
+      };
+    });
 
     //add create new book
     builder.addCase(fetchAddCartToolkit.fulfilled, (state, action) => {
       // Add user to the state array
-      return ({
+      return {
         ...state,
         statusLoading: false,
-      })
-    })
-    
-    builder.addCase(fetchGetCartToolkit.pending, (state, action) => {
-      
-    })
+      };
+    });
 
     builder.addCase(fetchGetCartToolkit.rejected, (state, action) => {
-      console.log('chạy vào rejected')
-      state.listCart = []
-      
-    })
+      state.listCart = [];
+    });
 
     builder.addCase(fetchGetCartToolkit.fulfilled, (state, action) => {
-      console.log('action.payload.res',action.payload)
-      state.listCart = action.payload.res
-      
-    })
-
-    builder.addCase(fetchGetBookInCartChecked.pending, (state, action) => {
-      
-    })
+      state.listCart = action.payload.res;
+    });
 
     builder.addCase(fetchGetBookInCartChecked.fulfilled, (state, action) => {
-      state.listBookInCartChecked = action.payload.res
-      
-    })
+      state.listBookInCartChecked = action.payload.res;
+    });
   },
 });
 
@@ -280,6 +236,6 @@ export const {
   getCartsChecked,
   removeItemCarts,
   removeItemCheckedCarts,
-  removeAllItemCheckedCarts
+  removeAllItemCheckedCarts,
 } = cartSlice.actions;
 export default cartSlice.reducer;

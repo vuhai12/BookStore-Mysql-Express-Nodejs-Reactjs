@@ -1,46 +1,34 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import {
-  apiGetProfileUser
-} from '../../services/ProfileUserService'
-
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { apiGetProfileUser } from "../../services/ProfileUserService";
 
 export const fetchGetProfileUserToolkit = createAsyncThunk(
-  'User/fetchGetProfileUserToolkit',
+  "User/fetchGetProfileUserToolkit",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await apiGetProfileUser()
-      return response.profileUserData
+      const response = await apiGetProfileUser();
+      return response.profileUserData;
     } catch (error) {
-      return rejectWithValue(error.response.data)
+      return rejectWithValue(error.response.data);
     }
   }
-)
+);
 
 export const profileUserSlice = createSlice({
-  name: 'profileUser',
+  name: "profileUser",
   initialState: {
-   address:''
-  },
-  reducers: {
+    address: "",
   },
 
   extraReducers: (builder) => {
     // Add reducers for additional action types here, and handle loading state as needed
-    builder.addCase(fetchGetProfileUserToolkit.pending, (state, action) => {
-      
-    })
 
     builder.addCase(fetchGetProfileUserToolkit.fulfilled, (state, action) => {
-      state.address = action.payload.address
-    })
-
-    builder.addCase(fetchGetProfileUserToolkit.rejected, (state, action) => {
-    })
+      state.address = action.payload.address;
+    });
   },
-})
+});
 
 // Action creators are generated for each case reducer function
-export const {
-} = profileUserSlice.actions
+export const {} = profileUserSlice.actions;
 
-export default profileUserSlice.reducer
+export default profileUserSlice.reducer;

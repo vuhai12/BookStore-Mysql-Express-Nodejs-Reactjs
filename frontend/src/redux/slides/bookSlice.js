@@ -1,94 +1,99 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   apiGetBookById,
   apiGetBook,
   apiCreateBook,
   apiDeleteBook,
   apiUpdateBook,
-
-} from '../../services/BookService'
+} from "../../services/BookService";
 
 export const fetchGetListBookToolkit = createAsyncThunk(
-  'users/fetchGetListBookToolkit',
-  async (data, { rejectWithValue }) => {
+  "users/fetchGetListBookToolkit",
+  async (data, { rejectWithValue, signal }) => {
     try {
-      const response = await apiGetBook(data.limit, data.pageCurent, data.searchString, data.category, data.field, data.sort)
+      const response = await apiGetBook({ ...data, signal });
+      console.log("response", response);
       return {
-        response,data
-      } 
+        response,
+        data,
+      };
     } catch (error) {
-      return rejectWithValue(error.response.data)
+      if (signal.aborted) {
+        // Trường hợp request bị hủy bỏ
+        console.log("Request aborted");
+        return rejectWithValue({ message: "Request was aborted" });
+      }
+      return rejectWithValue(error.response.data);
     }
   }
-)
+);
 
 export const fetchGetBookByIdToolkit = createAsyncThunk(
-  'users/fetchGetBookByIdToolkit',
+  "users/fetchGetBookByIdToolkit",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await apiGetBookById(data)
-      return response.bookData
+      const response = await apiGetBookById(data);
+      return response.bookData;
     } catch (error) {
-      return rejectWithValue(error.response.data)
+      return rejectWithValue(error.response.data);
     }
   }
-)
+);
 
 export const fetchUpdateNewBookToolkit = createAsyncThunk(
-  'users/fetchUpdateNewBookToolkit',
+  "users/fetchUpdateNewBookToolkit",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await apiUpdateBook(data)
-      return response
+      const response = await apiUpdateBook(data);
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response.data)
+      return rejectWithValue(error.response.data);
     }
   }
-)
+);
 
 export const fetchCreatNewBookToolkit = createAsyncThunk(
-  'users/fetchCreatNewBookToolkit',
+  "users/fetchCreatNewBookToolkit",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await apiCreateBook(data)
-      return response
+      const response = await apiCreateBook(data);
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response.data)
+      return rejectWithValue(error.response.data);
     }
   }
-)
+);
 
 export const fetchDeleteNewBookToolkit = createAsyncThunk(
-  'users/fetchDeleteNewBookToolkit',
+  "users/fetchDeleteNewBookToolkit",
   async (data, { rejectWithValue }) => {
     try {
-      const res = await apiDeleteBook(data.bid)
-      return res
+      const res = await apiDeleteBook(data.bid);
+      return res;
     } catch (error) {
-      return rejectWithValue(error.response.data)
+      return rejectWithValue(error.response.data);
     }
   }
-)
+);
 
 export const bookSlice = createSlice({
-  name: 'book',
+  name: "book",
   initialState: {
-    access_token: '',
-    refresh_token: '',
+    access_token: "",
+    refresh_token: "",
     listBook: [],
     auth: false,
     edittingBook: {},
     isShowModal: false,
     totalBooks: 0,
     statusLoading: false,
-    limit: 3,
-    searchString: '',
+    searchString: "",
     pageCurent: 1,
     listUsers: [],
     error: null,
     bookDataById: {},
     quantityBook: 1,
-    countAllBook: 0
+    countAllBook: 0,
   },
   reducers: {
     startEdittingPostBook: (state, action) => {
@@ -100,74 +105,66 @@ export const bookSlice = createSlice({
         filename: action.payload.filename,
         bid: action.payload.id,
         category_code: action.payload.category_code,
-        description: action.payload.description
-      }
+        description: action.payload.description,
+      };
     },
 
     globalLoading: (action, state) => {
-      state.statusLoading = action.payload
+      state.statusLoading = action.payload;
     },
 
     showModal: (state, action) => {
-      state.isShowModal = true
+      state.isShowModal = true;
     },
 
     hideModal: (state, action) => {
-      state.isShowModal = false
+      state.isShowModal = false;
     },
   },
 
   extraReducers: (builder) => {
     builder.addCase(fetchGetBookByIdToolkit.fulfilled, (state, action) => {
-      state.bookDataById = action.payload
-
-    })
+      state.bookDataById = action.payload;
+    });
 
     builder.addCase(fetchGetListBookToolkit.pending, (state, action) => {
-      state.statusLoading = true,
-        state.searchString = ''
-    })
+      (state.statusLoading = true), (state.searchString = "");
+    });
 
     builder.addCase(fetchGetListBookToolkit.fulfilled, (state, action) => {
-
-      state.listBook = action.payload?.response?.bookData?.rows,
-        state.totalBooks = action.payload?.response.bookData?.count,
-        state.statusLoading = false,
-        state.searchString = action.payload?.data?.searchString,
-        state.pageCurent = action.payload?.data?.pageCurent
-
-    })
+      (state.listBook = action.payload?.response?.bookData?.rows),
+        (state.totalBooks = action.payload?.response.bookData?.count),
+        (state.statusLoading = false),
+        (state.searchString = action.payload?.data?.searchString),
+        (state.pageCurent = action.payload?.data?.pageCurent);
+    });
 
     builder.addCase(fetchCreatNewBookToolkit.pending, (state, action) => {
-      state.statusLoading = true
-    })
+      state.statusLoading = true;
+    });
 
     builder.addCase(fetchCreatNewBookToolkit.fulfilled, (state, action) => {
-      state.statusLoading = false
-    })
+      state.statusLoading = false;
+    });
 
     builder.addCase(fetchCreatNewBookToolkit.rejected, (state, action) => {
-      state.error = action.payload.message
-    })
+      state.error = action.payload.message;
+    });
 
-    builder.addCase(fetchDeleteNewBookToolkit.fulfilled, (state, action) => {
-    })
+    builder.addCase(fetchDeleteNewBookToolkit.fulfilled, (state, action) => {});
 
     builder.addCase(fetchUpdateNewBookToolkit.pending, (state, action) => {
-      state.statusLoading = true
-    })
+      state.statusLoading = true;
+    });
 
     builder.addCase(fetchUpdateNewBookToolkit.fulfilled, (state, action) => {
-      state.statusLoading = false
-    })
+      state.statusLoading = false;
+    });
   },
-})
+});
 
 // Action creators are generated for each case reducer function
-export const {
-  startEdittingPostBook,
-  showModal,
-  hideModal,
-} = bookSlice.actions
+export const { startEdittingPostBook, showModal, hideModal } =
+  bookSlice.actions;
 
-export default bookSlice.reducer
+export default bookSlice.reducer;

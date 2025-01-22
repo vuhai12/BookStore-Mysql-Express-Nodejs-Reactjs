@@ -1,210 +1,121 @@
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import { toast } from 'react-toastify'
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchLoginToolkit } from '../../redux/slides/userSlice';
-import { useTranslation } from 'react-i18next'
-import Nav from 'react-bootstrap/Nav';
-import { useNavigate, NavLink, Link } from 'react-router-dom'
-import Navbar from 'react-bootstrap/Navbar';
-import { fetchGetCartToolkit } from '../../redux/slides/cartSlice';
-import { useForm } from "react-hook-form"
-import { yupResolver } from "@hookform/resolvers/yup"
-import * as yup from "yup"
+import React from "react";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useNavigate, Link } from "react-router-dom";
+import * as yup from "yup";
+import { fetchLoginToolkit } from "../../redux/slides/userSlice";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-
-  let schema = yup
-    .object({
-      password: yup.string().min(6, 'Min length 6 character').required('you fill secction'),
-      email: yup.string().email('Email invalid').required('you fill secction')
-
-    })
-
+  const schema = yup.object({
+    email: yup
+      .string()
+      .email("Invalid email format")
+      .required("Email is required"),
+    password: yup
+      .string()
+      .min(6, "Password must be at least 6 characters")
+      .required("Password is required"),
+  });
 
   const {
     register,
     handleSubmit,
-    watch,
     setError,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
-  })
+  });
 
-  const [loginData, setLoginData] = useState({})
-  const [errorForm, setErrorForm] = useState({})
-  const [isSubmit, setIsSubmit] = useState(false)
-  const { t } = useTranslation('translation')
+  const onSubmit = async ({ email, password }) => {
+    try {
+      const result = await dispatch(fetchLoginToolkit({ email, password }));
 
-  useEffect(() => {
-    // dispatch(fetchGetCartToolkit())
-    if (isSubmit) {
-      validate()
-    }
-  }, [loginData])
+      if (result.payload.error === 1) {
+        setError("email", {
+          type: "server",
+          message: result.payload.message,
+        });
+      } else {
+        toast.success("Login successful", { autoClose: 300 });
 
-  const handleOnchangeUserLogin = (e) => {
-    setLoginData({
-      ...loginData,
-      [e.target.name]: e.target.value
-    })
-  }
-
-  const validate = () => {
-    let isValidate = true
-    const error = {}
-
-    if (loginData.email == '' || loginData.email == undefined) {
-      error.email = 'Please enter email'
-    } else {
-      let valid = /^([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$)/.test(loginData.email)
-      if (!valid) {
-        error.email = 'Email is not valid'
-      }
-    }
-
-    if (loginData.password == '' || loginData.password == undefined) {
-      error.password = 'Please enter password'
-    } else if (loginData.password.length < 6) {
-      error.password = 'password must be at least 6 characters long'
-    }
-
-    if (Object.keys(error).length > 0) {
-      setErrorForm(error)
-      isValidate = false
-    } else {
-      setErrorForm({})
-    }
-    return isValidate
-  }
-
-  const handleLogin = async () => {
-    let isValid = validate()
-    if (isValid) {
-      dispatch(fetchLoginToolkit({ email: loginData.email, password: loginData.password })).then((result) => {
-        if (result.payload) {
-          if (result.payload.error == 1) {
-            setErrorForm({
-              ...errorForm,
-              password: result.payload.message,
-            })
-          }
-          if (result.payload.error == 0) {
-            toast.success('Login succes', { autoClose: 300 })
-            if (result.payload.role_code == 'R1') {
-              setTimeout(() => {
-                navigate(`/system/admin/user`)
-                setLoginData({})
-              }, 1200)
-            }
-            if (result.payload.role_code == 'R2') {
-              setTimeout(() => {
-                navigate(`/user/info`)
-                setLoginData({})
-              }, 1200)
-            }
-          }
+        if (result.payload.role_code === "R1") {
+          navigate("/system-admin-user");
+        } else if (result.payload.role_code === "R2") {
+          navigate("/user-info");
         }
       }
-      ).catch((e) => console.log(e))
+    } catch (error) {
+      toast.error("An unexpected error occurred");
     }
-    setIsSubmit(true)
-  }
-  const handleLoginWithYub = ({ email, password }) => {
-    dispatch(fetchLoginToolkit({ email, password })).then((result) => {
-      if (result.payload) {
-        if (result.payload.error == 1) {
-          setError('email', {
-            type: "server",
-            message: result.payload.message,
-          });
-          // setErrorForm({
-          //   ...errorForm,
-          //   password: result.payload.message,
-          // })
-        }
-        if (result.payload.error == 0) {
-          toast.success('Login succes', { autoClose: 300 })
-          if (result.payload.role_code == 'R1') {
-            setTimeout(() => {
-              navigate(`/system/admin/user`)
-              setLoginData({})
-            }, 1200)
-          }
-          if (result.payload.role_code == 'R2') {
-            setTimeout(() => {
-              navigate(`/user/info`)
-              setLoginData({})
-            }, 1200)
-          }
-        }
-      }
-    }
-    ).catch((e) => console.log(e))
-  }
+  };
 
   return (
-    <>
-      <form className='form-auth'>
-        <h3>{t('auth.login')}</h3>
-        <div className='group'>
-          <label>Email address</label>
+    <div className="flex items-center justify-center mt-[100px] lg:mt-0">
+      <form
+        className="bg-white shadow-lg rounded px-8 pt-6 pb-8 w-96"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
+
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Email Address
+          </label>
           <input
             type="email"
-            name='email'
-            value={loginData.email}
-            placeholder="Enter email"
-            onChange={(e) => handleOnchangeUserLogin(e)}
-            // {...register("email", { required: true,pattern:/^([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$)/ })}
+            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              errors.email ? "border-red-500" : "border-gray-300"
+            }`}
+            placeholder="Enter your email"
             {...register("email")}
           />
-          {/* {errorForm.email && <p className='text-danger'>{errorForm.email}</p>} */}
-          {/* {errors.email?.type === "required" && (
-              <p style={{color:'red'}} role="alert">First email is required</p>
-            )}
-             {errors.email?.type === "pattern" && (
-              <p style={{color:'red'}} role="alert">First email is invalid</p>
-            )} */}
-          <p className='text-red-600'>{errors.email?.message}</p>
+          {errors.email && (
+            <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+          )}
         </div>
-        <div className='group'>
-          <label>Password</label>
+
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Password
+          </label>
           <input
-            //  {...register("password", { required: true })}
             type="password"
-            name='password'
-            value={loginData.password}
-            placeholder="Password"
-            onChange={(e) => handleOnchangeUserLogin(e)}
+            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              errors.password ? "border-red-500" : "border-gray-300"
+            }`}
+            placeholder="Enter your password"
             {...register("password")}
           />
-          {/* {errorForm.password && <p className='text-danger'>{errorForm.password}</p>} */}
-          {/* {errors.password?.type === "required" && (
-              <p style={{color:'red'}} role="alert">First password is required</p>
-            )} */}
-          <p className='text-red-600'>{errors.password?.message}</p>
+          {errors.password && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.password.message}
+            </p>
+          )}
         </div>
 
-
-        {/* <Button variant="primary" onKeyDown={handleLogin} onClick={handleLogin}> */}
-        <button className='btn-auth' variant="primary" onKeyDown={handleLogin} onClick={handleSubmit(handleLoginWithYub)}>
-          {t('login')}
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        >
+          Login
         </button>
 
-        <div className='group'>
-          <span>Don't have an account? </span>
-          <Link className='text-red-700 font-semibold' to='/register'>Register</Link>
+        <div className="text-center mt-4">
+          <p className="text-sm text-gray-600">
+            Don’t have an account?{" "}
+            <Link to="/register" className="text-blue-500 hover:underline">
+              Register
+            </Link>
+          </p>
         </div>
       </form>
-    </>
-  )
-}
+    </div>
+  );
+};
 
-export default Login
-
-
+export default Login;

@@ -1,198 +1,287 @@
-import React, { useEffect, useState, useCallback } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import Container from 'react-bootstrap/Container';
-import Table from 'react-bootstrap/Table';
-import Button from 'react-bootstrap/Button';
-import SelectQuantity from '../../components/SelectQuantity/SelectQuantity';
-// import { blobToBase64 } from '../../ultils/blobToBase64';
+import React, { useState, useEffect, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { GoTrash } from "react-icons/go";
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { useNavigate } from 'react-router-dom';
-import Modal from 'react-bootstrap/Modal';
+import SelectQuantity from "../../components/SelectQuantity/SelectQuantity";
+import Cart from "../../assets/pngwing.png";
 import {
   fetchGetCartToolkit,
   fetchDeleteBookInCartToolkit,
   fetchCheckedBookCartToolkit,
-  fetchCheckedAllBookCartToolkit,
+  // fetchCheckedAllBookCartToolkit,
   fetchDeleteAllBookCartToolkit,
   fetchIncrementQuantityBookInCart,
-  fetchDecrementQuantityBookInCart
-} from '../../redux/slides/cartSlice'
-import Cart from '../../assets/pngwing.png'
-import ButtonComponent from '../../components/ButtonComponent/ButtonComponent';
-import { fetchGetProfileUserToolkit } from '../../redux/slides/profileUserSlice';
-import { jwtDecode } from 'jwt-decode';
-import { fetchGetUserByIdToolkit } from '../../redux/slides/userSlice';
+  fetchDecrementQuantityBookInCart,
+} from "../../redux/slides/cartSlice";
+import { fetchGetProfileUserToolkit } from "../../redux/slides/profileUserSlice";
+import { fetchGetUserByIdToolkit } from "../../redux/slides/userSlice";
+import Modal from "react-bootstrap/Modal";
+// import OrderSuccessPopup from "../../components/OrderSuccessPopup/OrderSuccessPopup";
 
 const CartDetail = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const token = localStorage.getItem("access_token");
 
+  const listCart = useSelector((state) => state.cart.listCart);
+  const address = useSelector((state) => state.user.userData.address);
 
-  const token = localStorage.getItem('access_token')
+  let isCheckedOrder = listCart?.some(
+    (item) => item.books.cartBooks.isChecked === 1
+  );
+  // let isCheckedAll = listCart?.every(
+  //   (item) => item.books.cartBooks.isChecked === 1
+  // );
+  // let listCartBookId = listCart?.map((item) => item.books.id);
 
-  const [show, setShow] = useState(false);
-
-  const listCart = useSelector((state) => state.cart.listCart)
-  // const address = useSelector((state) => state.profileUser.address)
-  const address = useSelector((state) => state.user.userData.address)
-  console.log('address', address)
-  let isCheckedOrder = listCart?.some((item) => item.books.cartBooks.isChecked == 1)
-  let isCheckedAll = listCart?.every((item) => item.books.cartBooks.isChecked == 1)
-  let listCartBookId = listCart?.map((item) => item.books.id)
+  const [showPopup, setShowPopup] = useState(false); // Để kiểm tra xem modal có hiển thị không
 
   useEffect(() => {
-    dispatch(fetchGetProfileUserToolkit())
-    dispatch(fetchGetCartToolkit())
-    dispatch(fetchGetUserByIdToolkit())
-  }, [])
-
-
-
-  const handleClose = () => setShow(false);
+    dispatch(fetchGetProfileUserToolkit());
+    dispatch(fetchGetCartToolkit());
+    dispatch(fetchGetUserByIdToolkit());
+  }, []);
 
   const handleChangeQuantity = useCallback((item, flag) => {
-    if (flag == 'minus' && item.books.quantity == 1) return
-    if (flag == 'plus' && item.books.quantity > item.books.available) return
-    if (flag == 'minus') {
-      dispatch(fetchDecrementQuantityBookInCart({ bookId: item.books.id, quantity: +item.books.quantity - 1 })).then(() => {
-        dispatch(fetchGetCartToolkit())
-      })
+    if (flag === "minus" && item.books.quantity === 1) return;
+    if (flag === "plus" && item.books.quantity > item.books.available) return;
+    if (flag === "minus") {
+      dispatch(
+        fetchDecrementQuantityBookInCart({
+          bookId: item.books.id,
+          quantity: item.books.quantity - 1,
+        })
+      ).then(() => {
+        dispatch(fetchGetCartToolkit());
+      });
     }
-    if (flag == 'plus') {
-      dispatch(fetchIncrementQuantityBookInCart({ bookId: item.books.id, quantity: +item.books.quantity + 1 })).then(() => {
-        dispatch(fetchGetCartToolkit())
-      })
+    if (flag === "plus") {
+      dispatch(
+        fetchIncrementQuantityBookInCart({
+          bookId: item.books.id,
+          quantity: item.books.quantity + 1,
+        })
+      ).then(() => {
+        dispatch(fetchGetCartToolkit());
+      });
     }
-  }, [])
+  }, []);
 
   const handleCheckBox = (itemBook) => {
-    dispatch(fetchCheckedBookCartToolkit({ cartBookId: itemBook.books.id, isChecked: !itemBook.books.cartBooks.isChecked })).then(() => {
-      dispatch(fetchGetCartToolkit())
-    })
-  }
+    dispatch(
+      fetchCheckedBookCartToolkit({
+        cartBookId: itemBook.books.id,
+        isChecked: !itemBook.books.cartBooks.isChecked,
+      })
+    ).then(() => {
+      dispatch(fetchGetCartToolkit());
+    });
+  };
 
-  const handleSelectAll = () => {
-    dispatch(fetchCheckedAllBookCartToolkit({ isChecked: !isCheckedAll, listCartBookId })).then(() => {
-      dispatch(fetchGetCartToolkit())
-    })
-  }
+  // const handleSelectAll = () => {
+  //   dispatch(
+  //     fetchCheckedAllBookCartToolkit({
+  //       isChecked: !isCheckedAll,
+  //       listCartBookId,
+  //     })
+  //   ).then(() => {
+  //     dispatch(fetchGetCartToolkit());
+  //   });
+  // };
 
   const handleOrder = () => {
     if (!isCheckedOrder) {
-      // setShow(true)
-      alert('ban chua chon san pham de mua!')
+      Swal.fire({
+        title: "Thông báo!",
+        text: "Bạn chưa chọn sản phẩm",
+        icon: "warning",
+        confirmButtonText: "Đóng",
+      });
+    } else if (!address) {
+      Swal.fire({
+        title: "Thông báo!",
+        text: "Bạn chưa điền địa chỉ giao hàng",
+        icon: "warning",
+        confirmButtonText: "Đóng",
+      });
     } else {
-      navigate('/checkout/payment')
+      navigate("/checkout-payment"); // Chuyển trang nếu mọi thứ ổn
     }
-  }
+  };
+
+  const handleClosePopup = () => setShowPopup(false); // Đóng popup
 
   const handleDeleteItemChecked = (item) => {
-    if (item.books.cartBooks.isChecked == 1) {
+    if (item.books.cartBooks.isChecked === 1) {
       dispatch(fetchDeleteBookInCartToolkit(item.books.id)).then((result) => {
-        alert('bạn có muốn xóa sản phẩm')
-        if (result.payload.error == 0) {
-          dispatch(fetchGetCartToolkit())
+        Swal.fire({
+          title: "Thông báo!",
+          text: "Bạn đã xóa sản phẩm",
+          icon: "success",
+          confirmButtonText: "Đóng",
+        });
+        if (result.payload.error === 0) {
+          dispatch(fetchGetCartToolkit());
         }
-      })
+      });
     } else {
-      alert('chưa chọn sản phẩm để xóa')
+      Swal.fire({
+        title: "Thông báo!",
+        text: "Bạn chưa chọn sản phẩm để xóa",
+        icon: "warning",
+        confirmButtonText: "Đóng",
+      });
     }
-  }
-  const handleDeleteAllItemChecked = () => {
-    if (isCheckedOrder) {
-      dispatch(fetchDeleteAllBookCartToolkit()).then((result) => {
-        alert('bạn có muốn xóa sản phẩm')
-        if (result.payload.error == 0) {
-          dispatch(fetchGetCartToolkit())
-        }
-      })
-    } else {
-      alert('chưa chọn sản phẩm để xóa')
-    }
-  }
+  };
+
+  // const handleDeleteAllItemChecked = () => {
+  //   if (isCheckedOrder) {
+  //     dispatch(fetchDeleteAllBookCartToolkit()).then((result) => {
+  //       alert("Bạn có muốn xóa tất cả sản phẩm?");
+  //       if (result.payload.error === 0) {
+  //         dispatch(fetchGetCartToolkit());
+  //       }
+  //     });
+  //   } else {
+  //     alert("Chưa chọn sản phẩm để xóa");
+  //   }
+  // };
 
   const handleEditAddress = () => {
     if (token) {
-      navigate('/user/info')
+      navigate("/user-info");
     }
-  }
+  };
+
   return (
-    <>
-      <div className='mt-[60px] sm:mt-0 p-[20px] sm:p-0'>
-        <h3>Giỏ hàng</h3>
-        {listCart?.length > 0 ?
-          <div className='flex flex-col my-[30px]' >
-            <div className='overflow-auto '>
-              <table className='w-[600px] sm:w-[100%]'>
+    <div className="container mx-auto lg:mt-1 mt-[100px]">
+      <h3 className="text-xl font-semibold text-gray-800">Giỏ hàng của bạn</h3>
+
+      {listCart?.length > 0 ? (
+        <div className="grid grid-cols-12 gap-4 mt-6">
+          {/* Table Section */}
+          <div className="col-span-12 md:col-span-8 border rounded-lg bg-white shadow-md p-4">
+            <div className="overflow-auto">
+              <table className="w-full">
                 <thead>
-                  <tr>
-                    <th className="p-[5px] border-x-[1px]  border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600  "><input type="checkbox" checked={isCheckedAll} onChange={handleSelectAll} /></th>
-                    <th className="p-[5px] border-x-[1px]  border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600  ">Sản phẩm</th>
-                    <th className="p-[5px] border-x-[1px]  border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600  ">Đơn giá</th>
-                    <th className="p-[5px] border-x-[1px]  border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600  ">Số lượng</th>
-                    <th className="p-[5px] border-x-[1px]  border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600  ">Thành tiền</th>
-                    <th className="p-[5px] border-x-[1px]  border-gray-200 bg-gray-100 text-left text-[12px] font-semibold text-gray-600  " onClick={handleDeleteAllItemChecked}><GoTrash /></th>
+                  <tr className="text-sm font-semibold text-gray-600">
+                    <th className="p-3 border">Chọn</th>
+                    <th className="p-3 border">Sản phẩm</th>
+                    <th className="p-3 border">Đơn giá</th>
+                    <th className="p-3 border">Số lượng</th>
+                    <th className="p-3 border">Thành tiền</th>
+                    <th className="p-3 border">Xóa</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {listCart && listCart?.length > 0 && listCart?.map((item, idx) => {
-                    return (
-                      <tr key={`user${idx}`}>
-                        <td className="p-[5px] border-x-[1px]  border-gray-200 bg-white text-[12px]">
-                          <input
-                            type="checkbox"
-                            onChange={() => {
-                              handleCheckBox(item)
-                            }}
-                            checked={item.books.cartBooks.isChecked}
-                          />
-                        </td>
-                        {/* <td><img style={{ width: '50px', height: '50px' }} src={blobToBase64(item.image)}></img></td> */}
-                        <td className="p-[5px] border-x-[1px]  border-gray-200 bg-white text-[12px]"><img style={{ width: '50px', height: '50px' }} src={(item.books.image)}></img></td>
-                        <td className="p-[5px] border-x-[1px]  border-gray-200 bg-white text-[12px]">{item.books.price.toLocaleString()} vnđ</td>
-                        <td className="p-[5px] border-x-[1px]  border-gray-200 bg-white text-[12px]">
-                          <SelectQuantity
-                            quantity={item.books.quantity}
-                            handleChangeQuantity={(flag) => handleChangeQuantity(item, flag)}
-                          />
-                        </td>
-                        <td className="p-[5px] border-x-[1px]  border-gray-200 bg-white text-[12px]">{(+item.books.price * item.books.quantity).toLocaleString()} vnđ</td>
-                        <td className="p-[5px] border-x-[1px]  border-gray-200 bg-white text-[12px]" onClick={() => handleDeleteItemChecked(item)}><GoTrash /></td>
-                      </tr>
-                    )
-                  })}
+                  {listCart.map((item, idx) => (
+                    <tr key={idx} className="text-sm text-gray-700">
+                      <td className="p-3 border text-center">
+                        <input
+                          type="checkbox"
+                          checked={item.books.cartBooks.isChecked}
+                          onChange={() => handleCheckBox(item)}
+                        />
+                      </td>
+                      <td className="p-3 border text-left flex items-center">
+                        <img
+                          src={item.books.image}
+                          alt="product"
+                          className="w-16 h-16 object-cover rounded-md mr-4"
+                        />
+                        {item.books.name}
+                      </td>
+                      <td className="p-3 border text-center">
+                        {item.books.price.toLocaleString()} đ
+                      </td>
+                      <td className="p-3 border text-center">
+                        <SelectQuantity
+                          quantity={item.books.quantity}
+                          handleChangeQuantity={(flag) =>
+                            handleChangeQuantity(item, flag)
+                          }
+                        />
+                      </td>
+                      <td className="p-3 border text-center">
+                        {(
+                          item.books.price * item.books.quantity
+                        ).toLocaleString()}{" "}
+                        đ
+                      </td>
+                      <td className="p-3 border text-center">
+                        <button
+                          className="text-red-500 hover:text-red-700"
+                          onClick={() => handleDeleteItemChecked(item)}
+                        >
+                          <GoTrash size={20} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
-            <div className='mt-[10px]'>
-              <h5>Giao tới: {address ? address : ''} </h5>
-              <p style={{ color: 'blue', cursor: 'pointer' }} onClick={handleEditAddress}>Chỉnh sửa</p>
-              <button className='bg-red-500 text-white p-[10px] rounded-[5px]'  onClick={handleOrder}>Mua hàng</button>
-            </div>
-          </div> :
-          <div className='text-center flex items-center flex-col mt-[10px]' >
-            <img src={Cart} className='w-[30%] sm:w-[10%]' />
-            <h3 className='my-[10px]'>giỏ hàng trống</h3>
-            <button
-              onClick={() => navigate('/')}
-             className='bg-slate-700 text-white p-[10px] rounded-[5px] mt-[10px]'
-            >Mua sắm ngay</button>
           </div>
-        }
-      </div>
-      {/* <Modal show={show} onHide={handleClose}>
-        <Modal.Body>Bạn chưa chọn sản phẩm để mua!</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            ok đã hiểu
-          </Button>
-        </Modal.Footer>
-      </Modal> */}
-    </>
-  )
-}
 
-export default CartDetail
+          {/* Summary Section */}
+          <div className="col-span-12 md:col-span-4 border rounded-lg bg-white shadow-md p-4">
+            <h4 className="text-lg font-semibold text-gray-800">
+              Tóm tắt đơn hàng
+            </h4>
+            <p className="text-gray-600 mt-2">
+              Giao tới: {address ? address : "Chưa có địa chỉ"}
+            </p>
+            <button
+              className="text-blue-600 mt-2 underline"
+              onClick={handleEditAddress}
+            >
+              Chỉnh sửa địa chỉ
+            </button>
+            <button
+              className="bg-red-500 text-white w-full py-2 mt-4 rounded-md hover:bg-red-600"
+              onClick={handleOrder}
+            >
+              Mua hàng
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="text-center mt-5 flex flex-col items-center justify-center">
+          <img src={Cart} alt="Empty cart" className="w-32 h-32 object-cover" />
+          <h4 className="text-xl font-semibold text-gray-700 mt-2">
+            Giỏ hàng của bạn hiện tại trống
+          </h4>
+          <p className="text-gray-600 mt-2">
+            Hãy thêm một vài sản phẩm vào giỏ hàng để bắt đầu mua sắm.
+          </p>
+          <button
+            className="bg-blue-500 text-white py-2 px-6 mt-6 rounded-md hover:bg-blue-600"
+            onClick={() => navigate("/")}
+          >
+            Mua sắm ngay
+          </button>
+        </div>
+      )}
+
+      {/* Modal (Popup) */}
+      <Modal show={showPopup} onHide={handleClosePopup}>
+        <Modal.Body>
+          <p className="text-center text-lg text-red-500">
+            Bạn chưa chọn sản phẩm hoặc chưa điền đầy đủ thông tin địa chỉ!
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <button
+            className="w-full bg-gray-500 text-white py-2 rounded-md"
+            onClick={handleClosePopup}
+          >
+            Đóng
+          </button>
+        </Modal.Footer>
+      </Modal>
+    </div>
+  );
+};
+
+export default CartDetail;

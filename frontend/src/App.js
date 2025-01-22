@@ -1,19 +1,14 @@
-import './App.css';
-import React, { Fragment } from 'react'
-import { ToastContainer, toast } from 'react-toastify';
-import { createBrowserHistory } from "history";
-import AppRoutes from './routes/AppRoutes'
+import React from "react";
+import AppRoutes from "./routes/AppRoutes";
+import { ToastContainer } from "react-toastify";
+import "./App.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-
 function App() {
-
-  const path = createBrowserHistory().location.pathname
-
   return (
     <>
-      <AppRoutes pathCurrent={path}/>
+      <AppRoutes />
       <ToastContainer
         position="top-right"
         autoClose={5000}

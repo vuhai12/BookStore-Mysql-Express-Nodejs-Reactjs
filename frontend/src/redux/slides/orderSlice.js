@@ -1,72 +1,73 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { apiCreateOrder, apiGetOrders,apiGetOrderById } from '../../services/OrderService'
-
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  apiCreateOrder,
+  apiGetOrders,
+  apiGetOrderById,
+} from "../../services/OrderService";
 
 export const fetchCreateOrderToolkit = createAsyncThunk(
-  'users/fetchCreateOrderToolkit',
+  "users/fetchCreateOrderToolkit",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await apiCreateOrder(data)
-      return response
+      const response = await apiCreateOrder(data);
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response.data)
+      return rejectWithValue(error.response.data);
     }
   }
-)
+);
 
 export const fetchGetOrdersToolkit = createAsyncThunk(
-  'users/fetchGetOrdersToolkit',
+  "users/fetchGetOrdersToolkit",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await apiGetOrders()
-      return response
+      const response = await apiGetOrders();
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response.data)
+      return rejectWithValue(error.response.data);
     }
   }
-)
+);
 
 export const fetchGetOrderByIdToolkit = createAsyncThunk(
-  'users/fetchGetOrderByIdToolkit',
+  "users/fetchGetOrderByIdToolkit",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await apiGetOrderById()
-      return response
+      const response = await apiGetOrderById();
+      console.log("response order", response);
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response.data)
+      return rejectWithValue(error.response.data);
     }
   }
-)
+);
 
 export const orderSlice = createSlice({
-  name: 'order',
+  name: "order",
   initialState: {
     listOrders: [],
-    listOrderById:[]
+    listOrderById: [],
   },
-  reducers: {
-  },
+  reducers: {},
 
   extraReducers: (builder) => {
-    builder.addCase(fetchCreateOrderToolkit.fulfilled, (state, action) => {
-    })
+    builder.addCase(fetchCreateOrderToolkit.fulfilled, (state, action) => {});
   },
 
   extraReducers: (builder) => {
     builder.addCase(fetchGetOrdersToolkit.fulfilled, (state, action) => {
-      state.listOrders = action.payload
-    })
+      state.listOrders = action.payload;
+    });
   },
 
   extraReducers: (builder) => {
     builder.addCase(fetchGetOrderByIdToolkit.fulfilled, (state, action) => {
-      console.log('action.payload',action.payload)
-      state.listOrderById = action.payload.orderData
-    })
+      console.log("action.payload", action.payload);
+      state.listOrderById = action.payload.orderData;
+    });
   },
-})
+});
 
-export const {
-} = orderSlice.actions
+export const {} = orderSlice.actions;
 
-export default orderSlice.reducer
+export default orderSlice.reducer;

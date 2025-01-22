@@ -1,51 +1,42 @@
-import userReducer from './slides/userSlice';
-import bookReducer from './slides/bookSlice';
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import userReducer from "./slides/userSlice";
+import bookReducer from "./slides/bookSlice";
 import cartReducer from "./slides/cartSlice";
 import orderReducer from "./slides/orderSlice";
 import profileUserReducer from "./slides/profileUserSlice";
-import { configureStore, combineReducers } from '@reduxjs/toolkit'
-import storage from 'redux-persist/lib/storage'
-import localforage from 'localforage';
-import { useDispatch } from 'react-redux'
-import {
-  persistStore,
-  persistReducer,
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-} from "redux-persist";
-import thunk from 'redux-thunk';
 
+// Persist configuration
 const persistConfig = {
-  key: 'root',
-  // storage: localforage,
-  storage: storage,
-  whitelist:['']
-}
+  key: "root",
+  storage,
+  whitelist: ["cart", "user", "order"], // Specify reducers to persist
+};
 
+// Combine reducers
 const rootReducer = combineReducers({
   cart: cartReducer,
   user: userReducer,
-  order:orderReducer,
-  book:bookReducer,
-  profileUser:profileUserReducer,
-
+  order: orderReducer,
+  book: bookReducer,
+  profileUser: profileUserReducer,
 });
 
-const persistedReducer = persistReducer(persistConfig, rootReducer)
+// Create a persisted reducer
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
+// Configure the store
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware: [thunk]
-})
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        // Ignore persist actions in serializable checks
+        ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
+      },
+    }),
+});
 
-
-
-export const persistor = persistStore(store)
-
-
-
-
+// Create persistor instance
+export const persistor = persistStore(store);

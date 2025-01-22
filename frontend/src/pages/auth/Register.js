@@ -1,116 +1,142 @@
-import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify'
-import { useDispatch, useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next'
-import { fetchRegisterToolkit } from '../../redux/slides/userSlice';
-import { useNavigate, NavLink, Link } from 'react-router-dom'
+import React from "react";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useNavigate, Link } from "react-router-dom";
+import * as yup from "yup";
+import { fetchRegisterToolkit } from "../../redux/slides/userSlice";
 
 const Register = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
-    const [dataRegister, setDataRegister] = useState({})
-    const [isSubmit, setIsSubmit] = useState(false)
-    const { t } = useTranslation('translation')
-    const [errorMessage, setErrorMessage] = useState({})
+  // Schema validation với yup
+  const schema = yup.object({
+    email: yup
+      .string()
+      .email("Invalid email format")
+      .required("Email is required"),
+    password: yup
+      .string()
+      .min(6, "Password must be at least 6 characters")
+      .required("Password is required"),
+    confirmPassword: yup
+      .string()
+      .oneOf([yup.ref("password"), null], "Passwords must match")
+      .required("Confirm Password is required"),
+  });
 
-    useEffect(() => {
-        if (isSubmit) {
-            isValidForm()
-        }
-    }, [dataRegister])
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
-    const isValidForm = () => {
-        let isValid = true
-        const error = {}
+  const onSubmit = async ({ email, password }) => {
+    try {
+      const result = await dispatch(fetchRegisterToolkit({ email, password }));
 
-        if (dataRegister.email == '' || dataRegister.email == undefined) {
-            error.email = 'Please enter email'
-        } else {
-            let valid = /^([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$)/.test(dataRegister.email)
-            if (!valid) {
-                error.email = 'Email is not invalid'
-            }
-        }
-        if (dataRegister.password == '' || dataRegister.password == undefined) {
-            error.password = 'Please enter password'
-        }
-        if (dataRegister.password?.length < 6) {
-            error.password = 'password must be at least 6 characters long'
-        }
-        if (dataRegister.confirmPassword != dataRegister.password) {
-            error.confirmPassword = 'Passwword is not match'
-        }
-        if (Object.keys(error).length > 0) {
-            setErrorMessage(error)
-            isValid = false
-        } else {
-            setErrorMessage({})
-        }
-        return isValid
+      if (result.payload.error === 1) {
+        setError("email", {
+          type: "server",
+          message: result.payload.message,
+        });
+      } else {
+        toast.success("Registration successful", { autoClose: 300 });
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred");
     }
+  };
 
-    const handleRegister = async () => {
-        let isValid = isValidForm()
-        if (isValid) {
-            dispatch(fetchRegisterToolkit({ email: dataRegister.email, password: dataRegister.password })).then((result) => {
+  return (
+    <div className="flex items-center justify-center lg:mt-0 mt-[100px]">
+      <form
+        className="bg-white shadow-lg rounded px-8 pt-6 pb-8 w-96"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <h2 className="text-2xl font-bold text-center mb-6">Register</h2>
 
-                if (result.payload) {
-                    if (result.payload.error == 1) {
-                        setErrorMessage({
-                            ...errorMessage,
-                            email: result.payload.message
-                        })
-                    }
-                    if (result.payload.error == 0) {
-                        setTimeout(() => {
-                            navigate(`/login`)
-                            setDataRegister({})
-                        }, 2000)
-                        toast.success('Register User succes', { autoClose: 1000 })
-                    }
-                }
-            }).catch((e) => console.log(e))
-        }
-        setIsSubmit(true)
-    }
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Email Address
+          </label>
+          <input
+            type="email"
+            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              errors.email ? "border-red-500" : "border-gray-300"
+            }`}
+            placeholder="Enter your email"
+            {...register("email")}
+          />
+          {errors.email && (
+            <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+          )}
+        </div>
 
-    const handleOnchangeUserLogin = (e) => {
-        setDataRegister({
-            ...dataRegister,
-            [e.target.name]: e.target.value
-        })
-    }
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Password
+          </label>
+          <input
+            type="password"
+            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              errors.password ? "border-red-500" : "border-gray-300"
+            }`}
+            placeholder="Enter your password"
+            {...register("password")}
+          />
+          {errors.password && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.password.message}
+            </p>
+          )}
+        </div>
 
-    return (
-        <>
-            <form className='form-auth'>
-                <h3>Register</h3>
-                <div className='group'>
-                    <label>Email address</label>
-                    <input type="email" name='email' value={dataRegister.email} placeholder="Email" onChange={(e) => handleOnchangeUserLogin(e)} />
-                    {errorMessage.email && <p className='text-red-600'>{errorMessage.email}</p>}
-                </div>
-                <div className='group'>
-                    <label>Password</label>
-                    <input type="password" name='password' value={dataRegister.password} placeholder="Password" onChange={(e) => handleOnchangeUserLogin(e)} />
-                    {errorMessage.password && <p className='text-red-600'>{errorMessage.password}</p>}
-                </div>
-                <div className='group'>
-                    <label>Confirm Password</label>
-                    <input type="password" name='confirmPassword' value={dataRegister.confirmPassword} placeholder="Confirm Password" onChange={(e) => handleOnchangeUserLogin(e)} />
-                    {errorMessage.confirmPassword && <p className='text-red-600'>{errorMessage.confirmPassword}</p>}
-                </div>
-                <button className='btn-auth' onClick={handleRegister}>
-                    Register
-                </button>
-                <div className='group'>
-                    <span>Already have an account? </span>
-                    <Link className='text-red-700 font-semibold' to='/login'>Login</Link>
-                </div>
-            </form>
-        </>
-    )
-}
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Confirm Password
+          </label>
+          <input
+            type="password"
+            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              errors.confirmPassword ? "border-red-500" : "border-gray-300"
+            }`}
+            placeholder="Confirm your password"
+            {...register("confirmPassword")}
+          />
+          {errors.confirmPassword && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.confirmPassword.message}
+            </p>
+          )}
+        </div>
 
-export default Register
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        >
+          Register
+        </button>
+
+        <div className="text-center mt-4">
+          <p className="text-sm text-gray-600">
+            Already have an account?{" "}
+            <Link to="/login" className="text-blue-500 hover:underline">
+              Login
+            </Link>
+          </p>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default Register;

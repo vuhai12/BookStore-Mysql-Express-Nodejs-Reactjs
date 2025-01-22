@@ -1,131 +1,129 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { useParams, useLocation, Navigate, useNavigate } from 'react-router-dom';
-import { blobToBase64 } from '../../ultils/blobToBase64';
-import SelectQuantity from '../../components/SelectQuantity/SelectQuantity';
-import { decrementItem, incrementItem, addToCart, fetchAddCartToolkit, fetchGetCartToolkit } from '../../redux/slides/cartSlice';
-import { jwtDecode } from 'jwt-decode'
+import React, { useCallback, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  fetchAddCartToolkit,
+  fetchGetCartToolkit,
+} from "../../redux/slides/cartSlice";
+import SelectQuantity from "../../components/SelectQuantity/SelectQuantity";
+import { jwtDecode } from "jwt-decode";
 
 const BookDetail = () => {
-    const bookId = useParams()
-    const dispatch = useDispatch()
-    // const bookDataById = useSelector((state) => state.user.bookDataById)
-    // const quantityBook = useSelector((state) => state.cart.quantity)
-    const location = useLocation();
-    let navigate = useNavigate();
-    const listCart = useSelector((state) => state.cart.listCart)
-    // useEffect(() => {
-    //     // dispatch(fetchGetBookByIdToolkit(bookId.id))
-    //     dispatch(fetchGetCartToolkit())
-    // }, [listCart])
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-    const [quantity, setQuantity] = useState(1)
-    const handleQuantity = useCallback(() => {
-    }, [quantity])
-
-    const handleChangeQuantity = useCallback((flag) => {
-        if (flag == 'minus' && quantity == 1) return
-        if (flag == 'minus') {
-            setQuantity(quantity - 1)
-        }
-        if (flag == 'plus') {
-            setQuantity(quantity + 1)
-        }
-    }, [quantity])
-
-    const token = localStorage.getItem("access_token");
-
-    const handleAddCart = () => {
-        if (token) {
-            const { role_code } = jwtDecode(token)
-            if ((role_code == 'R1' || role_code == 'R2')) {
-                // dispatch(addToCart({ bookId: location.state.props.id, quantity, price: location.state.props.price, image: location.state.props.image }))
-                dispatch(fetchAddCartToolkit(
-                    {
-                        image: location.state.props.image,
-                        bid: String(location.state.props.id),
-                        quantity,
-                        totalPrices: (+location.state.props.price) * (+quantity),
-                        isChecked: '0'
-                    })).then(() => {
-                        dispatch(fetchGetCartToolkit())
-                    })
-            } else {
-                navigate('/login')
-            }
-        } else {
-            navigate('/login')
-        }
+  useEffect(() => {
+    // Nếu không có dữ liệu trong location.state, chuyển hướng về trang chính
+    if (!location.state || !location.state.props) {
+      navigate("/");
     }
+  }, [location, navigate]);
 
-    return (
-        <>
-            <div>
-                <div className='p-[20px] w-full mt-[60px] flex flex-col sm:flex-row sm:relative'>
-                    <div style={{ width: '100%' }}>
-                        <img
-                            src={location.state.props.image}
-                            // src={bookDataById.length>0 ? blobToBase64(bookDataById?.image):<></>}
-                            style={{ objectFit: 'cover', width: '100%', height: '350px' }}
-                        />
-                    </div>
-                    <div style={{ width: '100%', padding: '20px' }}>
-                        <h3 className='font-bold sm:text-[30px]'>{location.state.props.title}</h3>
-                        <h3 style={{ color: 'red', fontSize: '20px' }}>{location.state.props?.price.toLocaleString()} VNĐ</h3>
-                        <p className=''>Số lượng</p>
-                        <SelectQuantity
-                            quantity={quantity}
-                            handleQuantity={handleQuantity}
-                            handleChangeQuantity={handleChangeQuantity}
-                        />
-                        <button
-                            onClick={handleAddCart}
-                            className='sm:w-full sm:p-[10px] sm:bg-blue-900 sm:text-white sm:rounded-[5px] sm:my-[10px]'
-                        >
-                            Thêm giỏ hàng
-                        </button>
-                        <button
-                            className='sm:w-full sm:p-[10px] sm:bg-red-600 sm:text-white sm:rounded-[5px] sm:my-[10px]'
-                        >
-                            Mua ngay
-                        </button>
-                    </div>
-                    {/* <div className='flex fixed bottom-0 z-50 bg-gray-300 w-full h-[60px] sm:w-[30%] sm:absolute sm:bottom-[-60px] ' >
-                        <button
-                            onClick={handleAddCart}
-                            className='basis-1 grow '
-                        >
-                            Thêm giỏ hàng
-                        </button>
-                        <button
-                            className='basis-1 grow bg-red-500 text-white '
-                        >
-                            Mua ngay
-                        </button>
-                    </div> */}
-                    {/* <div style={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }} >
-                            <Button
-                                onClick={handleAddCart}
-                                variant="link"
-                                style={{ border: '2px solid red', textDecoration: 'none', marginRight: '10px' }}>
-                                Thêm giỏ hàng
-                            </Button>
-                            <Button variant="danger">Mua ngay</Button>
-                        </div> */}
-                </div>
-                {/* <div style={{width:'50%',padding:'20px'}}>
-                        <h3>{location.state.props.title}</h3>
-                        <h3 style={{ color: 'red', fontSize: '45px' }}>{location.state.props?.price.toLocaleString()} VNĐ</h3>
-                        <h5>Số lượng</h5>
-                        <SelectQuantity
-                            quantity={quantity}
-                            handleQuantity={handleQuantity}
-                            handleChangeQuantity={handleChangeQuantity}
-                        />
-                    </div> */}
-            </div>
-        </>
-    )
-}
+  const [quantity, setQuantity] = useState(1);
+  const token = localStorage.getItem("access_token");
 
-export default BookDetail
+  const handleChangeQuantity = useCallback((flag) => {
+    setQuantity((prev) =>
+      flag === "minus" && prev > 1
+        ? prev - 1
+        : flag === "plus"
+        ? prev + 1
+        : prev
+    );
+  }, []);
+
+  // Đảm bảo giá trị mặc định nếu location.state không tồn tại
+  const {
+    title = "",
+    description = "",
+    price = 0,
+    originalPrice = 0,
+    image = "",
+  } = location.state?.props || {};
+
+  const handleAction = (redirectToCart = false) => {
+    if (!token) return navigate("/login");
+
+    const { role_code } = jwtDecode(token);
+    if (role_code !== "R2") return navigate("/login");
+
+    const payload = {
+      image: location.state.props.image,
+      bid: String(location.state.props.id),
+      quantity,
+      totalPrices: +location.state.props.price * +quantity,
+      isChecked: "0",
+    };
+
+    dispatch(fetchAddCartToolkit(payload)).then(() => {
+      dispatch(fetchGetCartToolkit()).then(() => {
+        if (redirectToCart) navigate("/book-cart");
+      });
+    });
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto lg:mt-0 mt-[100px]">
+      {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 bg-white rounded-lg shadow-lg overflow-hidden"> */}
+      <div className="flex flex-col lg:flex-row gap-6 bg-white rounded-lg shadow-lg overflow-hidden">
+        {/* Phần 1: Ảnh sách */}
+        <div className="bg-gray-100 p-6 flex flex-1 justify-center items-center">
+          <img
+            src={image}
+            alt={title}
+            className="object-contain w-full max-h-96 rounded-lg"
+          />
+        </div>
+
+        {/* Phần 2: Chi tiết sách */}
+        <div className="lg:p-8 px-8 border-l border-gray-200 flex-1">
+          <h3 className="text-3xl font-bold text-gray-800">{title}</h3>
+          <p className="mt-4 text-gray-500 line-clamp-5">{description}</p>
+
+          <div className="mt-6 flex items-center gap-4">
+            <h4 className="text-xl font-semibold text-red-600">
+              {price.toLocaleString()} VNĐ
+            </h4>
+            {console.log("price", typeof price)}
+            {price && (
+              <p className="text-lg line-through text-gray-500">
+                {(price + price * 0.5).toLocaleString()} VNĐ
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Phần 3: Tùy chọn và hành động */}
+        <div className="lg:p-8 px-8 pb-8 flex flex-col justify-start gap-6 flex-1">
+          {/* Số lượng */}
+          <div>
+            <p className="text-lg font-semibold text-gray-800 mb-2">Số lượng</p>
+            <SelectQuantity
+              quantity={quantity}
+              handleChangeQuantity={handleChangeQuantity}
+            />
+          </div>
+
+          {/* Nút hành động */}
+          <div className="flex flex-col justify-between gap-4">
+            <button
+              onClick={() => handleAction(false)}
+              className="py-2 px-6 w-full flex-1 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+            >
+              Thêm giỏ hàng
+            </button>
+            <button
+              onClick={() => handleAction(true)}
+              className="py-2 px-6 flex-1 text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all"
+            >
+              Mua ngay
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default BookDetail;
