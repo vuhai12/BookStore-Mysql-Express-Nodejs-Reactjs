@@ -1,14 +1,7 @@
 import * as controllers from '../controllers';
 import express from 'express';
-import verifyToken from '../middlewares/verfy_token';
-const router = express.Router()
+const router = express.Router();
 
+router.get('/', controllers.getCategory);
 
-// router.use(verifyToken)
-
-router.get('/', controllers.getCategory)
-
-
-
-
-module.exports = router
+module.exports = router;

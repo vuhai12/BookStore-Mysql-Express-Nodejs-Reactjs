@@ -1,7 +1,6 @@
 import db from '../models';
 import { Op } from 'sequelize';
 import { v4 as generateId } from 'uuid';
-const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
 
 //CRUD = CREATE - READ - UPDATE - DELETE
@@ -12,7 +11,11 @@ export const getBooks = ({ page, limit, order, name, available, ...query }) =>
     //limit: mỗi lần lấy bao nhiêu
     //page, limit, order không phải để filter mà là để phân trang, nên dùng queries
     //name hay các biến khác (nếu có) cần filter nên dùng query
-    console.log('query',query)
+    console.log('query', query);
+    console.log('page', page);
+    console.log('limit', limit);
+    console.log('available', available);
+
     try {
       //tạo 1 object là queries để thiết lập việc truy vấn cho sequelize
       //xuyên suốt quá trình thì object sẽ được thêm thắt các cặp key/value để phục vụ việc truy vấn được chính xác như yêu cầu
@@ -35,14 +38,15 @@ export const getBooks = ({ page, limit, order, name, available, ...query }) =>
         //Nếu đứng từ bảng book mà chỉ cần chọc tới 1 bảng nữa thôi thì ko cần truyền mảng, truyền object là được
         //Còn nếu muốn lấy từ 2 bảng trở lên thì phải để vào một cái mảng, trong mảng sẽ chứa các object tương ứng với từng bảng muốn lấy.
         //có thể viết bọc trong mảng như bên dưới
-        include: [
-          {
-            model: db.Category,
-            attributes: { exclude: ['createdAt', 'updatedAt'] },
-            as: 'categoryData',
-          },
-        ],
+        // include: [
+        //   {
+        //     model: db.Category,
+        //     attributes: { exclude: ['createdAt', 'updatedAt'] },
+        //     as: 'categoryData',
+        //   },
+        // ],
       });
+      console.log('response', response);
       resolve({
         error: response ? 0 : 1,
         message: response ? 'Got' : 'Cannot found',
@@ -53,32 +57,28 @@ export const getBooks = ({ page, limit, order, name, available, ...query }) =>
     }
   });
 
-export const getBookById = (bookID) => new Promise(async (resolve, reject) => {
-  try {
-    const response = await db.Book.findOne({
-      where: { id: bookID },
-      attributes: {
-        exclude: ['createdAt', 'updatedAt', 'categoryId', 'filename']
-      },
-      include: [
-        { model: db.Category, as: 'categoryData', attributes: ['id', 'code', 'value'] }
-      ]
-    })
+export const getBookById = (bookID) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const response = await db.Book.findOne({
+        where: { id: bookID },
+        attributes: {
+          exclude: ['createdAt', 'updatedAt', 'categoryId', 'filename'],
+        },
+        include: [{ model: db.Category, as: 'categoryData', attributes: ['id', 'code', 'value'] }],
+      });
 
-    resolve({
-      error: response ? 0 : 1,
-      message: response ? 'Got' : 'Book not found',
-      bookData: response
-    })
-  } catch (error) {
-    reject(error)
-  }
-})
-
-
+      resolve({
+        error: response ? 0 : 1,
+        message: response ? 'Got' : 'Book not found',
+        bookData: response,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
 
 export const createNewBook = (body, fileData) =>
-
   new Promise(async (resolve, reject) => {
     try {
       const response = await db.Book.findOrCreate({
@@ -102,7 +102,6 @@ export const createNewBook = (body, fileData) =>
       reject(error);
     }
   });
-
 
 export const updateBook = ({ bid, ...body }, fileData) =>
   new Promise(async (resolve, reject) => {

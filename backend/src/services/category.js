@@ -1,7 +1,4 @@
 import db from '../models';
-import { Op } from 'sequelize';
-import { v4 as generateId } from 'uuid';
-const cloudinary = require('cloudinary').v2;
 
 //CRUD = CREATE - READ - UPDATE - DELETE
 
@@ -19,14 +16,3 @@ export const getCategory = () =>
       reject(error);
     }
   });
-
-
-
-
-
-
-
-
-
-
-
